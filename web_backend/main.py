@@ -1,6 +1,11 @@
-def main():
-    print("Hello from web-backend!")
+from dotenv import load_dotenv
 
+from fastapi import FastAPI
 
-if __name__ == "__main__":
-    main()
+import users.routes
+
+load_dotenv()
+
+app = FastAPI()
+
+app.include_router(users.routes.router)
