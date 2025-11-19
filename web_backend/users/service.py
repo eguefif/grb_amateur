@@ -1,23 +1,32 @@
-from .models import user_fakes as data, User
+from typing import Annotated
+from fastapi import Query
+from sqlmodel import select
 
-def get_all() -> list[User]:
-    return data
+from db import SessionDep
+from .models import User
 
-def get_one(id: int) -> User | None:
-    for user in data:
-        if user.id == id:
-            return user
-    return None
+def read_users(
+        session: SessionDep,
+        offset: int = 0,
+        limit: Annotated[int, Query(le=100)] = 100,
+            ) -> list[User]:
+    users = session.exec(select(User).offset(offset).limit(limit)).all()
+    return users
 
-def create(user: User) -> User:
-    data.append(user)
+def get_one(session: SessionDep, id: int) -> User | None:
+    user = session.get(User, id)
     return user
 
-def modify(id: int, user: User) -> User:
+def create(session: SessionDep, user: User) -> User:
+    session.add(user)
+    session.commit()
+    session.refresh(user)
     return user
 
-def replace(id: int, user: User) -> User:
-    return user
-
-def delete(id: int) -> bool:
-    return None
+def delete(session: SessionDep, id: int) -> bool:
+    user = session.get(User, id)
+    if not user:
+        return False
+    session.delete(user)
+    session.commit()
+    return True

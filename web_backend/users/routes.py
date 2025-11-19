@@ -1,30 +1,35 @@
-from fastapi import APIRouter
+from typing import Annotated
 
-import users.service
+from fastapi import APIRouter, Query
+
+import users.service as service
 from users.models import User
+
+from db import SessionDep
 
 router = APIRouter(prefix = "/users")
 
 @router.get("/")
-async def root() -> list[User]:
-    return service.get_all()
+async def root(
+        session: SessionDep,
+        offset: int = 0,
+        limit: Annotated[int, Query(le=100)] = 100,
+) -> list[User]:
+    return service.read_users(session, offset, limit)
 
 @router.get("/{id}")
-async def get_one(id) -> User | None:
-    return service.get_one(id)
+async def get_one(session: SessionDep, id: int) -> User | None:
+    user = service.get_one(session, id)
+    if not user:
+        raise HTTPException(status_code=404, detail='User not found')
+    return user
 
 @router.post("/")
-async def create_user(user: User) -> User:
-    return service.create(user)
-
-@router.patch("/")
-async def modify_user(user: User) -> User:
-    return service.modify(user)
-
-@router.put("/")
-async def replace_user(user: User) -> User:
-    return service.replace(user)
+async def create_user(session: SessionDep, user: User) -> User:
+    return service.create(session, user)
 
 @router.delete("/")
-async def delete_user(user_id: int) -> bool | None:
-    return service.delete(user_id)
+async def delete_user(session: SessionDep, user_id: int) -> bool | None:
+    if service.delete(session, user_id):
+        return True
+    return False

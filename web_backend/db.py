@@ -1,8 +1,14 @@
-import asyncio
+from typing import Annotated
+
+from fastapi import Depends
+
 from dotenv import load_dotenv
-from sqlmodel import SQLModel
+
+from sqlmodel import SQLModel, Session
+
 from sqlalchemy import text
 from sqlalchemy import create_engine
+
 import os
 
 load_dotenv()
@@ -30,6 +36,12 @@ def init_db():
         print("Database created")
     except Exception:
         print("Database already exists")
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+SessionDep = Annotated[Session, Depends(get_session)]
 
 
 if __name__ == "__main__":
