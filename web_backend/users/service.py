@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Query
+from fastapi import Query, HTTPException
 from sqlmodel import select
 
 from db import SessionDep

@@ -1,6 +1,7 @@
+from sqlalchemy.exc import IntegrityError
 from typing import Annotated
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 
 import users.service as service
 from users.models import User
@@ -26,6 +27,10 @@ async def get_one(session: SessionDep, id: int) -> User | None:
 
 @router.post("/")
 async def create_user(session: SessionDep, user: User) -> User:
+    try:
+        service.create(session, user)
+    except IntegrityError:
+        raise HTTPException(status_code=403, detail='Email already exists')
     return service.create(session, user)
 
 @router.delete("/")
