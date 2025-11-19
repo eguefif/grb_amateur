@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import axios from 'axios'
 
 const email = ref('')
 const isSubmitting = ref(false)
@@ -30,8 +31,9 @@ const handleSubmit = async () => {
   isSubmitting.value = true
 
   try {
-    // TODO: Replace with actual API call when backend is ready
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await axios.post('/users/', {
+      email: email.value
+    })
 
     message.value = 'Successfully registered for GRB notifications!'
     messageType.value = 'success'
