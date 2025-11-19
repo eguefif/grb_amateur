@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ObservationCard from './ObservationCard.vue'
 import type { GrbObservation } from '@/types/observation'
+
+const router = useRouter()
+
+const navigateToSubmit = () => {
+  router.push('/submit-observation')
+}
 
 // Mock data for demonstration - this will be replaced with API calls later
 const observations = ref<GrbObservation[]>([
@@ -64,6 +71,12 @@ const isLoading = ref(false)
       <p class="section-subtitle">
         Amateur astronomer observations of Gamma Ray Burst events detected by the Fermi Satellite
       </p>
+
+      <div class="submit-button-container">
+        <button @click="navigateToSubmit" class="submit-observation-button">
+          Submit Your Observation
+        </button>
+      </div>
 
       <div v-if="isLoading" class="loading">
         <div class="spinner"></div>
@@ -153,8 +166,38 @@ const isLoading = ref(false)
 .section-subtitle {
   color: rgba(177, 156, 217, 0.9);
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.submit-observation-button {
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
+  color: white;
+  border: 2px solid rgba(138, 43, 226, 0.5);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  outline: none;
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+}
+
+.submit-observation-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px rgba(138, 43, 226, 0.7);
+  border-color: #8a2be2;
+}
+
+.submit-observation-button:active {
+  transform: translateY(-1px);
 }
 
 .loading {

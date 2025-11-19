@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import HeaderBar from './components/HeaderBar.vue'
-import ObservationList from './components/ObservationList.vue'
 </script>
 
 <template>
   <div class="app">
     <HeaderBar />
     <main>
-      <ObservationList />
+      <router-view />
     </main>
   </div>
 </template>
