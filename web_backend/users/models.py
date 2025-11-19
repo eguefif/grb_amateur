@@ -1,11 +1,8 @@
-from pydantic import BaseModel
+from sqlmodel import  Field, SQLModel
 
 
-class User(BaseModel):
-    id: int
-    email: str
+class User(SQLModel, table=True):
+    __tablename__ = "users"
 
-user_fakes = [
-    User(id=0, email="albert.enstein@universe.com"),
-    User(id=1, email="johannes.kepler@universe.com"),
-]
+    id: int | None = Field(default=None, primary_key=True)
+    email: str = Field(index=True)
