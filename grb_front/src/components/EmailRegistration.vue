@@ -12,6 +12,11 @@ const validateEmail = (email: string): boolean => {
   return emailRegex.test(email)
 }
 
+const closeMessage = () => {
+  message.value = ''
+  messageType.value = ''
+}
+
 const handleSubmit = async () => {
   message.value = ''
   messageType.value = ''
@@ -45,8 +50,13 @@ const handleSubmit = async () => {
       messageType.value = ''
     }, 5000)
   } catch (error) {
-    message.value = 'Registration failed. Please try again.'
-    messageType.value = 'error'
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      message.value = 'This email is already registered'
+      messageType.value = 'error'
+    } else {
+      message.value = 'Registration failed. Please try again.'
+      messageType.value = 'error'
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -71,7 +81,10 @@ const handleSubmit = async () => {
 
     <transition name="fade">
       <div v-if="message" :class="['message', messageType]">
-        {{ message }}
+        <span>{{ message }}</span>
+        <button @click="closeMessage" class="close-button" type="button" aria-label="Close message">
+          ✕
+        </button>
       </div>
     </transition>
   </div>
@@ -157,6 +170,32 @@ const handleSubmit = async () => {
   font-weight: 500;
   text-align: center;
   backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.close-button:hover {
+  opacity: 1;
 }
 
 .message.success {
