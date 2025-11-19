@@ -35,11 +35,17 @@ const handleSubmit = async () => {
       email: email.value
     })
 
-    message.value = 'Successfully registered for GRB notifications!'
+    message.value = 'Successfully registered!'
     messageType.value = 'success'
     email.value = ''
+
+    // Clear success message after 5 seconds
+    setTimeout(() => {
+      message.value = ''
+      messageType.value = ''
+    }, 5000)
   } catch (error) {
-    message.value = 'An error occurred. Please try again.'
+    message.value = 'Registration failed. Please try again.'
     messageType.value = 'error'
   } finally {
     isSubmitting.value = false
@@ -48,155 +54,142 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="email-registration">
-    <div class="container">
-      <h1 class="title">Gamma Ray Burst Alert Registration</h1>
-      <p class="subtitle">
-        Register your email to receive notifications when the Fermi Satellite detects a Gamma Ray
-        Burst event
-      </p>
+  <div class="registration-section">
+    <form @submit.prevent="handleSubmit" class="registration-form">
+      <input
+        v-model="email"
+        type="email"
+        class="email-input"
+        placeholder="your.email@example.com"
+        :disabled="isSubmitting"
+        autocomplete="email"
+      />
+      <button type="submit" class="submit-button" :disabled="isSubmitting">
+        {{ isSubmitting ? 'Registering...' : 'Get Alerts' }}
+      </button>
+    </form>
 
-      <form @submit.prevent="handleSubmit" class="form">
-        <div class="form-group">
-          <label for="email" class="label">Email Address</label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            class="input"
-            placeholder="your.email@example.com"
-            :disabled="isSubmitting"
-            autocomplete="email"
-          />
-        </div>
-
-        <button type="submit" class="button" :disabled="isSubmitting">
-          {{ isSubmitting ? 'Registering...' : 'Register for Alerts' }}
-        </button>
-
-        <div v-if="message" :class="['message', messageType]">
-          {{ message }}
-        </div>
-      </form>
-    </div>
+    <transition name="fade">
+      <div v-if="message" :class="['message', messageType]">
+        {{ message }}
+      </div>
+    </transition>
   </div>
 </template>
 
 <style scoped>
-.email-registration {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.container {
-  max-width: 500px;
-  width: 100%;
-  background: white;
-  border-radius: 12px;
-  padding: 2.5rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.subtitle {
-  color: #718096;
-  text-align: center;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-group {
+.registration-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex: 1;
+  max-width: 500px;
 }
 
-.label {
-  font-weight: 500;
-  color: #2d3748;
-  font-size: 0.875rem;
+.registration-form {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.input {
-  padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
+.email-input {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  border: 2px solid rgba(138, 43, 226, 0.4);
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  background: rgba(26, 26, 46, 0.6);
+  color: #fff;
   transition: all 0.2s;
   outline: none;
+  min-width: 0;
+  backdrop-filter: blur(10px);
 }
 
-.input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.email-input::placeholder {
+  color: rgba(177, 156, 217, 0.6);
 }
 
-.input:disabled {
-  background-color: #f7fafc;
+.email-input:focus {
+  border-color: #8a2be2;
+  background: rgba(26, 26, 46, 0.8);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+}
+
+.email-input:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.button {
-  padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.submit-button {
+  padding: 0.625rem 1.5rem;
+  background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
   color: white;
-  border: none;
+  border: 2px solid rgba(138, 43, 226, 0.5);
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
   outline: none;
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
 }
 
-.button:hover:not(:disabled) {
+.submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 30px rgba(138, 43, 226, 0.6);
+  border-color: #8a2be2;
 }
 
-.button:active:not(:disabled) {
+.submit-button:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.button:disabled {
+.submit-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .message {
-  padding: 0.875rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: 500;
   text-align: center;
+  backdrop-filter: blur(10px);
 }
 
 .message.success {
-  background-color: #c6f6d5;
-  color: #22543d;
-  border: 1px solid #9ae6b4;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 }
 
 .message.error {
-  background-color: #fed7d7;
-  color: #742a2a;
-  border: 1px solid #fc8181;
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .registration-section {
+    max-width: 100%;
+  }
+
+  .registration-form {
+    flex-direction: column;
+  }
 }
 </style>

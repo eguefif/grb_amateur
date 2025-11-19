@@ -1,9 +1,25 @@
 <script setup lang="ts">
-import EmailRegistration from './components/EmailRegistration.vue'
+import HeaderBar from './components/HeaderBar.vue'
+import ObservationList from './components/ObservationList.vue'
 </script>
 
 <template>
-  <EmailRegistration />
+  <div class="app">
+    <HeaderBar />
+    <main>
+      <ObservationList />
+    </main>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+</style>
