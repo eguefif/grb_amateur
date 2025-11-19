@@ -1,0 +1,4 @@
+setup:
+    uv sync
+    uvr db.py
+    uvr alembic upgrade head

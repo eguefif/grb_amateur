@@ -1,24 +1,59 @@
-# Gamma Ray Burst for Amateur
+# Gamma Ray Burst for Amateur Astronomers
 
-This project is all about connecting Amateur Astronomers with the Ferm Satellite.
-This platform will allow:
-* Astronomers to register for event notification when the Ferm Satellite detect a GRB event
-* Publish their observation
-* Receive notification by email
-* Receive notification directly to a client that can start an observation and recording
+A platform connecting amateur astronomers with the Fermi Satellite for Gamma Ray Burst (GRB) event notifications. This system enables astronomers to register for email notifications when the Fermi Satellite detects a GRB event, publish observations, and receive notifications directly to client applications.
+
+## Features
+
+- **Real-time GRB Alerts**: Track Fermi satellite alerts from NASA's GCN (General Coordinates Network) Kafka server
+- **Email Notifications**: Register to receive GRB event notifications via email
+- **Observation Publishing**: Share your astronomical observations with the community
+- **Client Application**: Receive notifications directly to a client that can automate observation and recording
+
+## Architecture
+
+The project consists of three main components:
+
+### AlertSys (`alertsys/`)
+The alert monitoring system that connects to NASA's GCN Kafka server to track Fermi satellite alerts.
+
+### Web Backend (`web_backend/`)
+FastAPI-based REST API server for registration or posting observation
+
+### Frontend (`grb_front/`)
+Vue 3 + TypeScript + Vite web application.
+
+## Prerequisites
+
+- Python 3.13+
+- Node.js 20.19.0+ or 22.12.0+
+- Docker and Docker Compose
+- `uv` package manager
+- GCN credentials (for production mode)
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd grb_for_amator
+```
+
+### 2. Start the Database
+
+```bash
+docker-compose up
+```
+
+This starts PostgreSQL 16 on port 5432 with the database `grb_db`.
+
+### 3. Run other service
+
+See the other README to run the frontend, AlertSys, backend.
 
 
-## RoadMap
+The frontend will be available at `http://localhost:5173` (or the port shown in the terminal).
 
-1. Website that allow to register to notification with email.
-2. Website that can download the client.
-3. AlertSys that keep track of Fermi alert from Nasa GCN kafka server. 
+## Contact
 
-The webserver will use FastAPI/Vue.js.
-The rest will use python.
-
-## Security of the client
-
-I don't want to require registering with an email and a password. To avoid security issue, I will use a set of private and public key.
-All client will receive encoding message with a private key. They will all be able to use a public key to decrypt the message. This will
-garantee that a client won't be diverted by attackers.
+[eguefif@gmail.com]
