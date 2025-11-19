@@ -18,7 +18,7 @@ PG_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 PG_DB = os.getenv("POSTGRES_DB")
 PG_HOST = os.getenv("POSTGRES_URL")
 PG_PORT = os.getenv("POSTGRES_PORT")
-PG_ECHO = os.getenv("PG_ECHO") == "True"
+PG_ECHO = os.getenv("DB_ECHO") == "True"
 
 DB_URL = f"postgresql+psycopg://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}"
 
