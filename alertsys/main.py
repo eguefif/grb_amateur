@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from message_client import MessageClient
 import httpx
+import sys
 
 import json
 
@@ -16,9 +17,14 @@ def notify_users(message):
         print(" " * 5, f"Notifying user {user["email"]}")
     print()
 
+def get_message_client():
+    if os.getenv(TEST_CLIENT) == 'True':
+        return MessageClient(test=True)
+    MessageClient()
+
 def main():
     load_dotenv()
-    message_client = MessageClient(test=True)
+    message_client = get_message_client()
 
     while True:
         for message in message_client.consume(timeout=1):
