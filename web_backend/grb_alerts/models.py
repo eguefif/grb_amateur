@@ -1,7 +1,7 @@
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field
 
 class GRBAlert(SQLModel, table=True):
-    __table__name = 'grb_alerts'
+    __tablename__ = 'grb_alerts'
 
     id: int | None = Field(default=None, primary_key=True)
     title: str
@@ -17,4 +17,4 @@ class GRBAlert(SQLModel, table=True):
     algorithm: str
     detectors: str
     lc_url: str
-    comments: list[str]
+    comments: str
