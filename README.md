@@ -1,13 +1,38 @@
 # Gamma Ray Burst for Amateur Astronomers
 
-A platform connecting amateur astronomers with the Fermi Satellite for Gamma Ray Burst (GRB) event notifications. This system enables astronomers to register for email notifications when the Fermi Satellite detects a GRB event, publish observations, and receive notifications directly to client applications.
+A platform connecting amateur astronomers with the Fermi Satellite for Gamma Ray Burst (GRB) event notifications. This system enables astronomers to register for email notifications when the Fermi Satellite detects a GRB event, publish observations, and receive notifications.
 
 ## Features
 
 - **Real-time GRB Alerts**: Track Fermi satellite alerts from NASA's GCN (General Coordinates Network) Kafka server
 - **Email Notifications**: Register to receive GRB event notifications via email
 - **Observation Publishing**: Share your astronomical observations with the community
-- **Client Application**: Receive notifications directly to a client that can automate observation and recording
+
+## Roadmap
+
+### Web
+- [ ] Frontend + backend: add a system to register coordinate with email and precalculate observation angle
+- [ ] Frontend: refine form and try to understand data
+- [ ] Frontend: add a way to search observations
+- [ ] Frontend: main page
+	- [ ] add 5 last event cards
+	- [ ] add 5 last observations
+	- [ ] add the possibility to select and event and see observations
+- [ ] check setup and how to works
+
+### Production
+- [ ] open a free account with AWS or cloudflare
+- [ ] find a way to avoid bot
+- [ ] add an https domain
+- [ ] find a solution to easily push
+
+### AlertSys
+
+- [ ] add a system for notification: texto or email
+
+### Security
+- [ ] Add protection for end point to post new event
+- [ ] Check all endpoint policy
 
 ## Architecture
 
