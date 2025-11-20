@@ -25,17 +25,9 @@ const wavelengthRange = ref('')
 const instrument = ref('')
 const magnitude = ref('')
 const observationTime = ref('')
-const imageFile = ref<File | null>(null)
 
 // Local state
 const validationError = ref('')
-
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    imageFile.value = target.files[0]
-  }
-}
 
 const handleSubmit = () => {
   validationError.value = ''
@@ -62,7 +54,6 @@ const handleSubmit = () => {
   formData.append('instrument', instrument.value)
   formData.append('magnitude', magnitude.value)
   formData.append('observationTime', observationTime.value)
-  if (imageFile.value) formData.append('image', imageFile.value)
 
   emit('submit', formData)
 }
@@ -193,19 +184,6 @@ const handleCancel = () => {
           />
         </div>
       </div>
-
-      <div class="form-group">
-        <label for="image" class="label">Image</label>
-        <input
-          id="image"
-          type="file"
-          accept="image/*"
-          class="file-input"
-          @change="handleFileChange"
-          :disabled="isSubmitting"
-        />
-        <p class="help-text">Upload an image of your observation (optional)</p>
-      </div>
     </div>
 
     <div class="form-actions">
@@ -301,26 +279,6 @@ const handleCancel = () => {
 
 .input:disabled,
 .textarea:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.file-input {
-  padding: 0.5rem;
-  border: 2px solid rgba(138, 43, 226, 0.4);
-  border-radius: 8px;
-  background: rgba(26, 26, 46, 0.6);
-  color: rgba(177, 156, 217, 0.9);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.file-input:hover:not(:disabled) {
-  border-color: #8a2be2;
-}
-
-.file-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

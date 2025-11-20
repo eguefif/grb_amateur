@@ -1,4 +1,9 @@
-from sqlmodel import SQLModel, Field
+from typing import TYPE_CHECKING
+
+from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from observations.models import Observation
 
 class GRBAlert(SQLModel, table=True):
     __tablename__ = 'grb_alerts'
@@ -18,3 +23,4 @@ class GRBAlert(SQLModel, table=True):
     detectors: str
     lc_url: str
     comments: str
+    observations: list["Observation"] = Relationship(back_populates="observations")

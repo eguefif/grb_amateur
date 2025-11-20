@@ -20,6 +20,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from grb_alerts.models import GRBAlert
 from users.models import User
+from observations.models import Observation
 
 from sqlmodel import SQLModel
 target_metadata = SQLModel.metadata
