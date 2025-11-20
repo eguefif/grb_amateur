@@ -1,24 +1,23 @@
 from dotenv import load_dotenv
-from message_client import MessageClient
-import httpx
 import sys
+import os
+
+from message_client import MessageClient
+from backend_calls import get_users, post_event
+
 
 import json
-
-def get_users():
-    request = httpx.get("http://127.0.0.1:8000/users/")
-    return request.json()
-
 def notify_users(message):
     users = get_users()
     print("-" * 50)
-    print("New message from GCN: ", message, "\n")
+    print("New message from GCN: ", message['title'], "\n")
+    post_event(message)
     for user in users:
         print(" " * 5, f"Notifying user {user["email"]}")
     print()
 
 def get_message_client():
-    if os.getenv(TEST_CLIENT) == 'True':
+    if os.getenv("TEST_CLIENT") == 'True':
         return MessageClient(test=True)
     MessageClient()
 
@@ -28,12 +27,7 @@ def main():
 
     while True:
         for message in message_client.consume(timeout=1):
-            if message.error():
-                print("Error: ", message.error())
-                continue
-            print(f"topic={message.topic()}, offset={message.offset()}")
-            value = message.value()
-            notify_users(value)
+            notify_users(message)
 
 
 if __name__ == "__main__":

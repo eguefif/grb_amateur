@@ -12,11 +12,10 @@ if __name__ == '__main__':
             key, value = entry.split(':', 1)
             key = key.strip().lower()
             value = value.strip()
-            i key in h.keys():
+            if key in h.keys():
                 current_value = h[key]
-                if isinstance(former_value, list):
-                    current_value.append(value)
-                    h[key] = current_value
+                if isinstance(current_value, str):
+                    h[key] = current_value + ' | ' + value 
                 else:
                     h[key] = [value]
             else:

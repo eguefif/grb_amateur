@@ -3,7 +3,7 @@ import time
 from gcn_kafka import Consumer
 
 # This import is used by the test mode
-from message_client import fake_messages
+from dummy_message import fake_messages
 
 class MessageClient:
     def __init__(self, test=False):
@@ -27,29 +27,17 @@ class MessageClient:
             yield from self.run_test()
         else:
             for message in self.consumer.consume(timeout=timeout):
-                Message(message.value)
-                yield
+                yield self._parse_message(message)
 
     def run_test(self):
         for message in fake_messages:
-            if len(message) >= 1 and :
-                yield Message(message)
+            if len(message) >= 1:
+                message = self._parse_message(message)
+                yield message
             time.sleep(1)
 
-
-class Message:
-
-    def __init__(self, message):
-        self.message = message
-        self.data = self._parse_message(message.decode())
-
-    def get_key(key):
-        if key in self.data.keys:
-            self.data[key]
-        else:
-            None
-
     def _parse_message(self, message):
+        message = message.decode()
         splits = message.split('\n')
 
         data = {}
@@ -58,11 +46,10 @@ class Message:
                 key, value = entry.split(':', 1)
                 key = key.strip().lower()
                 value = value.strip()
-                if key in h.keys():
-                    current_value = h[key]
-                    if isinstance(former_value, list):
-                        current_value.append(value)
-                        data[key] = current_value
+                if key in data.keys():
+                    current_value = data[key]
+                    if isinstance(current_value, str):
+                        data[key] = current_value + ' | ' + value 
                     else:
                         data[key] = [value]
                 else:
