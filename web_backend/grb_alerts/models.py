@@ -5,8 +5,9 @@ from sqlmodel import SQLModel, Field, Relationship
 if TYPE_CHECKING:
     from observations.models import Observation
 
+
 class GRBAlert(SQLModel, table=True):
-    __tablename__ = 'grb_alerts'
+    __tablename__ = "grb_alerts"
 
     id: int | None = Field(default=None, primary_key=True)
     title: str

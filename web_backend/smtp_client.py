@@ -4,6 +4,7 @@ from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
 class SMTPClient:
     def __init__(self):
         self.password = os.getenv("FASTMAIL_PASS")
@@ -23,16 +24,18 @@ class SMTPClient:
         message = MIMEMultipart()
         message["From"] = self.login
         message["To"] = email
-        message["Subject"] = 'Confirm email address'
+        message["Subject"] = "Confirm email address"
         body = self._make_body(email)
         print("Sending confirmation message:\n", body)
-        message.attach(MIMEText(body, 'html'))
+        message.attach(MIMEText(body, "html"))
         return message
 
     def _make_body(self, email):
         body = "<html><body>"
         body += "<h2>Hello</h2>"
-        body += "<p>Please confirm your email address by going to the following addres</p>"
+        body += (
+            "<p>Please confirm your email address by going to the following addres</p>"
+        )
         body += f'<p><a href="{self.backend_domain}/users/confirm?email={email}">Confirmation link</a></p>'
         body += "<p>Emmanuel</p>"
         body += "</body></html>"
@@ -41,6 +44,7 @@ class SMTPClient:
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
+
     load_dotenv()
-    client  = SMTPClient()
-    client.send_email('eguefif@gmail.com')
+    client = SMTPClient()
+    client.send_email("eguefif@gmail.com")

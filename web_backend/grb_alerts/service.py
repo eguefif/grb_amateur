@@ -13,11 +13,11 @@ def add_alert(session: SessionDep, alert: GRBAlert) -> GRBAlert:
     session.refresh(alert)
     return alert
 
+
 def read_events(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-            ) -> list[GRBAlert]:
+) -> list[GRBAlert]:
     alerts = session.exec(select(GRBAlert).offset(offset).limit(limit)).all()
     return alerts
-

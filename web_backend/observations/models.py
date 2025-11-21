@@ -3,7 +3,7 @@ from grb_alerts.models import GRBAlert
 
 
 class Observation(SQLModel, table=True):
-    __tablename__ = 'observations'
+    __tablename__ = "observations"
 
     id: int | None = Field(default=None, primary_key=True)
     coordinates: str
