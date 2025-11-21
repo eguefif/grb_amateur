@@ -23,4 +23,4 @@ class GRBAlert(SQLModel, table=True):
     detectors: str
     lc_url: str
     comments: str
-    observations: list["Observation"] = Relationship(back_populates="observations")
+    observations: list["Observation"] = Relationship(back_populates="alert")

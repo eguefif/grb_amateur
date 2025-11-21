@@ -16,4 +16,4 @@ class Observation(SQLModel, table=True):
     observed_time: str
 
     alert_id: int = Field(default=None, foreign_key="grb_alerts.id")
-    alert: GRBAlert = Relationship(back_populates="grb_alerts")
+    alert: GRBAlert = Relationship(back_populates="observations")
