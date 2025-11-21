@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ObservationCard from './ObservationCard.vue'
 import type { GrbObservation } from '@/types/observation'
+import { getObservations } from '@/services/api'
 
 const router = useRouter()
 
@@ -10,58 +11,26 @@ const navigateToSubmit = () => {
   router.push('/submit-observation')
 }
 
-// Mock data for demonstration - this will be replaced with API calls later
-const observations = ref<GrbObservation[]>([
-  {
-    id: '1',
-    imageUrl: 'https://placehold.co/400x300/667eea/white?text=GRB+240815A',
-    date: '2024-08-15',
-    time: '14:23:45 UTC',
-    gcnEvent: {
-      triggerNumber: '240815A',
-      ra: 123.45,
-      dec: -23.67,
-      error: 3.2,
-      intensity: 4.5
-    },
-    observer: 'Dr. Smith Observatory',
-    telescope: 'Schmidt-Cassegrain 14"',
-    description: 'Follow-up observation of Fermi GBM trigger. Initial afterglow detected in R-band.'
-  },
-  {
-    id: '2',
-    imageUrl: 'https://placehold.co/400x300/764ba2/white?text=GRB+240814B',
-    date: '2024-08-14',
-    time: '03:15:22 UTC',
-    gcnEvent: {
-      triggerNumber: '240814B',
-      ra: 256.78,
-      dec: 45.32,
-      error: 2.8,
-      intensity: 6.2
-    },
-    observer: 'Amateur Astronomy Network',
-    telescope: 'Newtonian 10"',
-    description: 'Optical transient confirmed. Multiple exposures in V and R bands.'
-  },
-  {
-    id: '3',
-    imageUrl: 'https://placehold.co/400x300/667eea/white?text=GRB+240813C',
-    date: '2024-08-13',
-    time: '19:47:11 UTC',
-    gcnEvent: {
-      triggerNumber: '240813C',
-      ra: 89.12,
-      dec: -12.45,
-      error: 4.1,
-      intensity: 3.8
-    },
-    telescope: 'Refractor 6"',
-    description: 'Late-time observation, no visible afterglow detected. Upper limit magnitude R > 19.5'
-  }
-])
-
+const observations = ref<GrbObservation[]>([])
 const isLoading = ref(false)
+const error = ref<string | null>(null)
+
+const fetchObservations = async () => {
+  isLoading.value = true
+  error.value = null
+  try {
+    observations.value = await getObservations(0, 5)
+  } catch (err) {
+    error.value = 'Failed to load observations. Please try again later.'
+    console.error('Error fetching observations:', err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchObservations()
+})
 </script>
 
 <template>
@@ -81,6 +50,11 @@ const isLoading = ref(false)
       <div v-if="isLoading" class="loading">
         <div class="spinner"></div>
         <p>Loading observations...</p>
+      </div>
+
+      <div v-else-if="error" class="error-state">
+        <p>{{ error }}</p>
+        <button @click="fetchObservations" class="retry-button">Retry</button>
       </div>
 
       <div v-else-if="observations.length === 0" class="empty-state">
@@ -231,6 +205,38 @@ const isLoading = ref(false)
   padding: 4rem 2rem;
   color: rgba(177, 156, 217, 0.8);
   font-size: 1.125rem;
+}
+
+.error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 100, 100, 0.9);
+  font-size: 1.125rem;
+}
+
+.retry-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
+  color: white;
+  border: 2px solid rgba(138, 43, 226, 0.5);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  outline: none;
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(138, 43, 226, 0.7);
+  border-color: #8a2be2;
+}
+
+.retry-button:active {
+  transform: translateY(0);
 }
 
 .cards-grid {

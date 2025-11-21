@@ -5,49 +5,52 @@ defineProps<{
   observation: GrbObservation
 }>()
 
-const formatCoordinates = (ra: number, dec: number) => {
-  return `RA: ${ra.toFixed(2)}°, Dec: ${dec.toFixed(2)}°`
+const getPlaceholderImage = (observationId: number) => {
+  const colors = ['667eea', '764ba2', '8a2be2', '4b0082', '9b59b6']
+  const color = colors[observationId % colors.length]
+  return `https://placehold.co/400x300/${color}/white?text=Observation+${observationId}`
 }
 </script>
 
 <template>
   <div class="observation-card">
     <div class="card-image">
-      <img :src="observation.imageUrl" :alt="`GRB ${observation.gcnEvent.triggerNumber}`" />
+      <img :src="getPlaceholderImage(observation.id)" :alt="`Observation ${observation.id}`" />
     </div>
     <div class="card-content">
       <div class="card-header">
-        <h3 class="card-title">GRB {{ observation.gcnEvent.triggerNumber }}</h3>
+        <h3 class="card-title">Observation #{{ observation.id }}</h3>
         <div class="card-datetime">
-          <span class="date">{{ observation.date }}</span>
-          <span class="time">{{ observation.time }}</span>
+          <span class="date">Alert ID: {{ observation.alert_id }}</span>
+          <span class="time">{{ observation.observed_time }}</span>
         </div>
       </div>
       <div class="card-details">
         <div class="detail-row">
           <span class="label">Coordinates:</span>
-          <span class="value">{{ formatCoordinates(observation.gcnEvent.ra, observation.gcnEvent.dec) }}</span>
+          <span class="value">{{ observation.coordinates }}</span>
         </div>
         <div class="detail-row">
-          <span class="label">Error:</span>
-          <span class="value">{{ observation.gcnEvent.error }}°</span>
+          <span class="label">Reference:</span>
+          <span class="value">{{ observation.celestial_reference }} ({{ observation.equinox }})</span>
         </div>
         <div class="detail-row">
-          <span class="label">Intensity:</span>
-          <span class="value">{{ observation.gcnEvent.intensity }} ph/cm²/s</span>
+          <span class="label">Epoch:</span>
+          <span class="value">{{ observation.epoch }}</span>
         </div>
-        <div v-if="observation.observer" class="detail-row">
-          <span class="label">Observer:</span>
-          <span class="value">{{ observation.observer }}</span>
+        <div class="detail-row">
+          <span class="label">Instrument:</span>
+          <span class="value">{{ observation.instrument }}</span>
         </div>
-        <div v-if="observation.telescope" class="detail-row">
-          <span class="label">Telescope:</span>
-          <span class="value">{{ observation.telescope }}</span>
+        <div class="detail-row">
+          <span class="label">Wavelength:</span>
+          <span class="value">{{ observation.wave_length }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Magnitude:</span>
+          <span class="value">{{ observation.magnitude }}</span>
         </div>
       </div>
-      <p v-if="observation.description" class="description">
-        {{ observation.description }}
-      </p>
     </div>
   </div>
 </template>

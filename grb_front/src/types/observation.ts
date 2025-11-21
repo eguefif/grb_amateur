@@ -1,16 +1,12 @@
 export interface GrbObservation {
-  id: string
-  imageUrl: string
-  date: string
-  time: string
-  gcnEvent: {
-    triggerNumber: string
-    ra: number
-    dec: number
-    error: number
-    intensity: number
-  }
-  observer?: string
-  telescope?: string
-  description?: string
+  id: number
+  coordinates: string
+  celestial_reference: string
+  equinox: string
+  epoch: string
+  wave_length: string
+  instrument: string
+  magnitude: string
+  observed_time: string
+  alert_id: number
 }
