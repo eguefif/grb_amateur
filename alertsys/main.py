@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import sys
 import os
+from smtp_client import SMTPClient
 
 from message_client import MessageClient
 from backend_calls import get_users, post_event
@@ -12,18 +13,20 @@ def notify_users(message):
     print("-" * 50)
     print("New message from GCN: ", message['title'], "\n")
     post_event(message)
-    for user in users:
-        print(" " * 5, f"Notifying user {user["email"]}")
+    smtp_client = SMTPClient()
+    user_emails = [user["email"] for user in users]
+    smtp_client.send_emails(user_emails, message)
     print()
 
 def get_message_client():
     if os.getenv("TEST_CLIENT") == 'True':
         return MessageClient(test=True)
-    MessageClient()
+    return MessageClient(test=False)
 
 def main():
     load_dotenv()
     message_client = get_message_client()
+    print("Starting monitoring alert")
 
     while True:
         for message in message_client.consume(timeout=1):

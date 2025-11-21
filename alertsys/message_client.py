@@ -27,7 +27,11 @@ class MessageClient:
             yield from self.run_test()
         else:
             for message in self.consumer.consume(timeout=timeout):
-                yield self._parse_message(message)
+                if message.error():
+                    print("Error: ", message.error())
+                    continue
+                print(f"Alert received: {message.offset()}")
+                yield self._parse_message(message.value())
 
     def run_test(self):
         for message in fake_messages:
