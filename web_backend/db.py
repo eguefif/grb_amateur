@@ -10,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy import create_engine
 
 import os
+import sys
 
 load_dotenv()
 
@@ -32,10 +33,16 @@ engine = create_engine(
 
 def init_db():
     try:
-        engine.execute(text("CREATE DATABASE grb_db"))
-        print("Database created")
-    except Exception:
-        print("Database already exists")
+        with engine.connect() as conn:
+            # Drop tables in correct order (child tables first due to foreign keys)
+            conn.execute(text("DROP TABLE IF EXISTS observations CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS grb_alerts CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS users CASCADE"))
+            conn.execute(text("TRUNCATE alembic_version"))
+            conn.commit()
+            print("All tables dropped")
+    except Exception as e:
+        print(f"Error dropping tables: {e}")
 
 def get_session():
     with Session(engine) as session:

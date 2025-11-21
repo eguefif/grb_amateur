@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import axios from 'axios'
 import type { GRBEvent } from './GRBEventSelector.vue'
 
 // Props
@@ -28,9 +29,11 @@ const observationTime = ref('')
 
 // Local state
 const validationError = ref('')
+const successMessage = ref('')
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   validationError.value = ''
+  successMessage.value = ''
 
   // Basic validation
   if (!props.selectedEvent) {
@@ -44,18 +47,50 @@ const handleSubmit = () => {
     return
   }
 
-  // Prepare form data
-  const formData = new FormData()
-  formData.append('eventId', String(props.selectedEvent.id))
-  formData.append('coordinates', coordinates.value)
-  formData.append('referenceSystem', referenceSystem.value)
-  formData.append('equinox', equinox.value)
-  formData.append('wavelengthRange', wavelengthRange.value)
-  formData.append('instrument', instrument.value)
-  formData.append('magnitude', magnitude.value)
-  formData.append('observationTime', observationTime.value)
+  // Prepare observation data matching API schema
+  const observationData = {
+    coordinates: coordinates.value,
+    celestial_reference: referenceSystem.value,
+    equinox: equinox.value || '',
+    epoch: equinox.value || '',
+    wave_length: wavelengthRange.value,
+    instrument: instrument.value,
+    magnitude: magnitude.value,
+    observed_time: observationTime.value,
+    alert_id: props.selectedEvent.id
+  }
 
-  emit('submit', formData)
+  try {
+    const response = await axios.post('/observations/', observationData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json'
+      }
+    })
+
+    successMessage.value = 'Observation submitted successfully!'
+
+    // Reset form
+    coordinates.value = ''
+    referenceSystem.value = ''
+    equinox.value = ''
+    wavelengthRange.value = ''
+    instrument.value = ''
+    magnitude.value = ''
+    observationTime.value = ''
+
+    // Notify parent component of success after a brief delay
+    setTimeout(() => {
+      emit('cancel')
+    }, 2000)
+
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      validationError.value = error.response.data.detail || 'Failed to submit observation'
+    } else {
+      validationError.value = 'Failed to submit observation'
+    }
+  }
 }
 
 const handleCancel = () => {
@@ -70,6 +105,10 @@ const handleCancel = () => {
 
       <div v-if="validationError" class="validation-error">
         {{ validationError }}
+      </div>
+
+      <div v-if="successMessage" class="success-message">
+        {{ successMessage }}
       </div>
 
       <div class="form-group">
@@ -223,6 +262,16 @@ const handleCancel = () => {
   background-color: rgba(239, 68, 68, 0.2);
   color: #fca5a5;
   border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.4);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;

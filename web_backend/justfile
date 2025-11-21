@@ -2,3 +2,11 @@ setup:
     uv sync
     uvr db.py
     uvr alembic upgrade head
+
+db-build:
+    uv run db.py --drop_db
+    uv run alembic upgrade head
+    uv run python -m seed.seed
+
+seed:
+    uv run seed/seed.py

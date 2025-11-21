@@ -1,7 +1,7 @@
 """Add unique constraints on email in users
 
 Revision ID: effe51643230
-Revises: d3b25763c4c3
+Revises: 5c4410c1c914
 Create Date: 2025-11-20 09:55:23.449799
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'effe51643230'
-down_revision: Union[str, Sequence[str], None] = 'd3b25763c4c3'
+down_revision: Union[str, Sequence[str], None] = '5c4410c1c914'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
