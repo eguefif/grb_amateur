@@ -4,6 +4,7 @@ from sqlmodel import select
 
 from db import SessionDep
 from .models import User
+from smtp_client import SMTPClient
 
 
 def read_users(
@@ -21,12 +22,24 @@ def get_one(session: SessionDep, id: int) -> User | None:
     return user
 
 
+def send_confirmation_email(email: str):
+    smtp_client = SMTPClient()
+    smtp_client.send_confirmation_email(email)
+
 def create(session: SessionDep, user: User) -> User:
     user.email_confirmed = False
     session.add(user)
     session.commit()
     session.refresh(user)
     return user
+
+def confirm_email(session: SessionDep, email: str) -> True:
+    query = select(User).where(User.email == email)
+    user = session.exec(query).one()
+    user.email_confirmed = True
+    session.add(user)
+    session.commit()
+    return True
 
 
 def delete(session: SessionDep, id: int) -> bool:

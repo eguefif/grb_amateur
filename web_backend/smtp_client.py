@@ -1,3 +1,4 @@
+import base64
 import time
 import os
 from smtplib import SMTP_SSL
@@ -13,7 +14,7 @@ class SMTPClient:
         self.smtp_port = int(os.getenv("SMTP_PORT"))
         self.backend_domain = os.getenv("BACKEND_DOMAIN")
 
-    def send_email(self, email):
+    def send_confirmation_email(self, email):
         with SMTP_SSL(self.smtp_domain, port=self.smtp_port) as smtp:
             smtp.login(self.login, self.password)
             message = self._get_message(email)
@@ -36,7 +37,7 @@ class SMTPClient:
         body += (
             "<p>Please confirm your email address by going to the following addres</p>"
         )
-        body += f'<p><a href="{self.backend_domain}/users/confirm?email={email}">Confirmation link</a></p>'
+        body += f'<p><a href="{self.backend_domain}/users/confirm/{email}">Confirmation link</a></p>'
         body += "<p>Emmanuel</p>"
         body += "</body></html>"
         return body
@@ -47,4 +48,4 @@ if __name__ == "__main__":
 
     load_dotenv()
     client = SMTPClient()
-    client.send_email("eguefif@gmail.com")
+    client.send_confirmation_email("eguefif@fastmail.com")

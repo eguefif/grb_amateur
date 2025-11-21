@@ -1,7 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 from typing import Annotated
 
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, BackgroundTasks
+from fastapi.responses import HTMLResponse
 
 import users.service as service
 from users.models import User
@@ -29,12 +30,26 @@ async def get_one(session: SessionDep, id: int) -> User | None:
 
 
 @router.post("/")
-async def create_user(session: SessionDep, user: User) -> User:
+async def create_user(session: SessionDep, user: User, background_tasks: BackgroundTasks) -> User:
     try:
         service.create(session, user)
     except IntegrityError:
         raise HTTPException(status_code=403, detail="Email already exists")
+
+    background_tasks.add_task(service.send_confirmation_email, user.email)
     return service.create(session, user)
+
+@router.get("/confirm/{email}", response_class=HTMLResponse)
+def confirm_email(session: SessionDep, email: str) -> str:
+    try:
+        service.confirm_email(session, email)
+    except sqlalchemy.exc.NoResultFound:
+        raise HTTPException(status_code=404, detail="Email not found")
+    return """
+                <html><body>
+                <p>Email confirmed</p>
+                </body></html>
+            """
 
 
 @router.delete("/")
