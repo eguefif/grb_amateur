@@ -21,3 +21,10 @@ async def read_observations(
     limit: Annotated[int, Query(le=100)] = 100,
 ) -> list[Observation]:
     return service.read_observations(session, offset, limit)
+
+@router.get("/alert/{id}")
+async def read_observations_from_alert_id(
+        session: SessionDep,
+        id: int,
+) -> list[Observation]:
+    return service.read_observations_from_alert_id(session, id)

@@ -19,3 +19,7 @@ def read_observations(
     limit: Annotated[int, Query(le=100)] = 100,
 ) -> list[Observation]:
     return session.exec(select(Observation).offset(offset).limit(limit)).all()
+
+def read_observations_from_alert_id(session: SessionDep, id: int) -> list[Observation]:
+    query = select(Observation).where(Observation.alert_id == id)
+    return session.exec(query).all()
