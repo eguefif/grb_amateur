@@ -3,7 +3,7 @@ import sys
 import os
 from smtp_client import SMTPClient
 
-from message_client import MessageClient
+from message_client import GCNClient
 from backend_calls import get_users, post_event
 
 
@@ -23,8 +23,8 @@ def notify_users(message):
 
 def get_message_client():
     if os.getenv("TEST_CLIENT") == "True":
-        return MessageClient(test=True)
-    return MessageClient(test=False)
+        return GCNClient(test=True)
+    return GCNClient(test=False)
 
 
 def main():

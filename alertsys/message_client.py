@@ -5,8 +5,13 @@ from gcn_kafka import Consumer
 # This import is used by the test mode
 from dummy_message import fake_messages
 
+## There are several types of message from GCN
+# * GBM_Alert
+# * GBM_FIN_POS
+# * GBM_GRD_POS
 
-class MessageClient:
+
+class GCNClient:
     def __init__(self, test=False):
         self.test = test
         if self.test == False:
@@ -45,6 +50,9 @@ class MessageClient:
         print("New Message")
         print(message)
         message = message.decode()
+        # In position message, GRB_RA and GRB_DEC are multiline fields
+        # We remove the return line to parse them easily
+        message.replace(",\n", ", ")
         splits = message.split("\n")
 
         data = {}
@@ -62,4 +70,11 @@ class MessageClient:
                         data[key] = [value]
                 else:
                     data[key] = value
+        if "grb_ra" in data.keys():
+            data["grb_ra"] = self._format_grb_position(data["grb_ra"])
         return data
+
+    def _format_grb_position(self, data):
+        """grb_ra and grb_dec has a lot of empty space that needs to be trim"""
+        splits = data[","]
+        return ", ".join([position.strip() for position in data.split(",")])
