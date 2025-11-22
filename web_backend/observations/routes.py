@@ -1,4 +1,5 @@
 from typing import Annotated
+import sqlalchemy
 from fastapi import APIRouter, Query
 from db import SessionDep
 from .models import Observation
@@ -7,11 +8,15 @@ from . import service
 router = APIRouter(prefix="/observations")
 
 
-@router.post("/")
+@router.post("/{email}")
 async def create_observation(
-    session: SessionDep, observation: Observation
+    session: SessionDep, observation: Observation, email: str
 ) -> Observation:
-    return service.create_observation(session, observation)
+    try:
+        observation = service.create_observation(session, observation, email)
+    except sqlalchemy.exc.NoResultFound:
+        raise HTTPException(status_code=404, detail="Email not found")
+    return observation
 
 
 @router.get("/")

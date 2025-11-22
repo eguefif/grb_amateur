@@ -19,6 +19,7 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // Form fields
+const email = ref('')
 const coordinates = ref('')
 const referenceSystem = ref('')
 const equinox = ref('')
@@ -41,9 +42,16 @@ const handleSubmit = async () => {
     return
   }
 
-  if (!coordinates.value || !referenceSystem.value || !wavelengthRange.value ||
+  if (!email.value || !coordinates.value || !referenceSystem.value || !wavelengthRange.value ||
       !instrument.value || !magnitude.value || !observationTime.value) {
     validationError.value = 'Please fill in all required fields'
+    return
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email.value)) {
+    validationError.value = 'Please enter a valid email address'
     return
   }
 
@@ -61,7 +69,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post('/observations/', observationData, {
+    const response = await axios.post(`/observations/${email.value}`, observationData, {
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json'
@@ -71,6 +79,7 @@ const handleSubmit = async () => {
     successMessage.value = 'Observation submitted successfully!'
 
     // Reset form
+    email.value = ''
     coordinates.value = ''
     referenceSystem.value = ''
     equinox.value = ''
@@ -109,6 +118,22 @@ const handleCancel = () => {
 
       <div v-if="successMessage" class="success-message">
         {{ successMessage }}
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="label">
+          Email Address <span class="required">*</span>
+        </label>
+        <input
+          id="email"
+          v-model="email"
+          type="email"
+          class="input"
+          placeholder="e.g., astronomer@example.com"
+          :disabled="isSubmitting"
+          required
+        />
+        <p class="help-text">Email address to receive alerts for this observation</p>
       </div>
 
       <div class="form-group">
@@ -227,7 +252,7 @@ const handleCancel = () => {
 
     <div class="form-actions">
       <button type="button" @click="handleCancel" class="button button-secondary" :disabled="isSubmitting">
-        Cancel
+        Return to Homepage
       </button>
       <button type="submit" class="button button-primary" :disabled="isSubmitting || !selectedEvent">
         {{ isSubmitting ? 'Submitting...' : 'Submit Observation' }}

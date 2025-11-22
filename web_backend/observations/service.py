@@ -2,11 +2,18 @@ from typing import Annotated
 from fastapi import Query
 
 from .models import Observation
+from users.models import User
 from db import SessionDep
 from sqlmodel import select
 
 
-def create_observation(session: SessionDep, observation: Observation) -> Observation:
+def create_observation(
+        session: SessionDep,
+        observation: Observation,
+        email: str
+    ) -> Observation:
+    query = select(User).where(User.email == email)
+    session.exec(query).one()
     session.add(observation)
     session.commit()
     session.refresh(observation)
