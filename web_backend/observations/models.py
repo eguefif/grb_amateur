@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, Relationship
-from grb_alerts.models import GRBAlert
+from grb_alerts.models import GRBAlert, GRBPosition
 
 
 class Observation(SQLModel, table=True):
@@ -17,3 +17,6 @@ class Observation(SQLModel, table=True):
 
     alert_id: int = Field(default=None, foreign_key="grb_alerts.id")
     alert: GRBAlert = Relationship(back_populates="observations")
+
+    grb_position_id: int | None = Field(default=None, foreign_key="grb_positions.id")
+    grb_position: GRBPosition | None = Relationship(back_populates="observations")

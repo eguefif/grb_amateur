@@ -4,7 +4,7 @@ from sqlmodel import select
 
 from db import SessionDep
 
-from grb_alerts.models import GRBAlert
+from grb_alerts.models import GRBAlert, GRBPosition
 
 
 def add_alert(session: SessionDep, alert: GRBAlert) -> GRBAlert:
@@ -12,6 +12,12 @@ def add_alert(session: SessionDep, alert: GRBAlert) -> GRBAlert:
     session.commit()
     session.refresh(alert)
     return alert
+
+def add_grb_position(session: SessionDep, grb_position: GRBPosition) -> GRBPosition:
+    session.add(grb_position)
+    session.commit()
+    session.refresh(grb_position)
+    return grb_position
 
 
 def read_events(

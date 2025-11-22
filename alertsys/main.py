@@ -11,13 +11,13 @@ import json
 
 
 def notify_users(message):
-    users = get_users()
+    #users = get_users()
     print("-" * 50)
     print("New message from GCN: ", message["title"], "\n")
     post_event(message)
-    smtp_client = SMTPClient()
-    user_emails = [user["email"] for user in users]
-    smtp_client.send_emails(user_emails, message)
+    #smtp_client = SMTPClient()
+    #user_emails = [user["email"] for user in users]
+    #smtp_client.send_emails(user_emails, message)
     print()
 
 

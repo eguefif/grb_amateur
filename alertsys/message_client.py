@@ -52,15 +52,17 @@ class GCNClient:
         message = message.decode()
         # In position message, GRB_RA and GRB_DEC are multiline fields
         # We remove the return line to parse them easily
-        message.replace(",\n", ", ")
+        message = message.replace(",\n", ",").strip()
+
         splits = message.split("\n")
 
         data = {}
         for entry in splits:
-            print("First line: ", entry)
             if len(entry) >= 1:
                 key, value = entry.split(":", 1)
                 key = key.strip().lower()
+                if key == '2nd_most_likely':
+                    key = 'second_most_likely'
                 value = value.strip()
                 if key in data.keys():
                     current_value = data[key]
@@ -71,10 +73,14 @@ class GCNClient:
                 else:
                     data[key] = value
         if "grb_ra" in data.keys():
-            data["grb_ra"] = self._format_grb_position(data["grb_ra"])
+            data["grb_ra"] = self.format_grb_position(data["grb_ra"])
+        if "grb_dec" in data.keys():
+            data["grb_dec"] = self.format_grb_position(data["grb_dec"])
         return data
 
     def _format_grb_position(self, data):
         """grb_ra and grb_dec has a lot of empty space that needs to be trim"""
-        splits = data[","]
+        return ", ".join([position.strip() for position in data.split(",")])
+
+    def format_grb_position(self, data):
         return ", ".join([position.strip() for position in data.split(",")])

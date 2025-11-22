@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from grb_alerts.models import GRBAlert
+from grb_alerts.models import GRBAlert, GRBPosition
 from grb_alerts import service
 from db import SessionDep
 
@@ -11,6 +11,12 @@ router = APIRouter(prefix="/events")
 async def add_event(session: SessionDep, alert: GRBAlert) -> GRBAlert:
     alert = service.add_alert(session, alert)
     return alert
+
+@router.post("/position")
+async def add_event(session: SessionDep, grb_position: GRBPosition) -> GRBPosition:
+    grb_position = service.add_grb_position(session, grb_position)
+    return grb_position
+
 
 
 @router.get("/last_events")
