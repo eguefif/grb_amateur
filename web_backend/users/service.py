@@ -1,3 +1,4 @@
+import os
 from typing import Annotated
 from fastapi import Query, HTTPException
 from sqlmodel import select
@@ -18,13 +19,24 @@ def read_users(
 
 
 def get_one(session: SessionDep, id: int) -> User | None:
+
     user = session.get(User, id)
     return user
 
 
 def send_confirmation_email(email: str):
     smtp_client = SMTPClient()
-    smtp_client.send_confirmation_email(email)
+    backend_domain = os.getenv("BACKEND_DOMAIN")
+
+    body = "<html><body>"
+    body += "<h2>Hello</h2>"
+    body += (
+        "<p>Please confirm your email address by going to the following addres</p>"
+    )
+    body += f'<p><a href="{backend_domain}/users/confirm/{email}">Confirmation link</a></p>'
+    body += "<p>Emmanuel</p>"
+    body += "</body></html>"
+    smtp_client.send_confirmation_email([email], "Email Confirmation", body)
 
 def create(session: SessionDep, user: User) -> User:
     user.email_confirmed = False
