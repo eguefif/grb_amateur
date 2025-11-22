@@ -41,11 +41,14 @@ class MessageClient:
             time.sleep(1)
 
     def _parse_message(self, message):
+        print("New Message")
+        print(message)
         message = message.decode()
         splits = message.split('\n')
 
         data = {}
         for entry in splits:
+            print("First line: ", entry)
             if len(entry) >= 1:
                 key, value = entry.split(':', 1)
                 key = key.strip().lower()
