@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
 import ObservationCard from './ObservationCard.vue'
 import type { GrbObservation } from '@/types/observation'
-import { getObservations } from '@/services/api'
+import { getObservationsByAlertId } from '@/services/api'
 
-const router = useRouter()
-
-const navigateToSubmit = () => {
-  router.push('/submit-observation')
+interface Props {
+  alertId: number
 }
+
+const props = defineProps<Props>()
 
 const observations = ref<GrbObservation[]>([])
 const isLoading = ref(false)
@@ -19,7 +18,8 @@ const fetchObservations = async () => {
   isLoading.value = true
   error.value = null
   try {
-    observations.value = await getObservations(0, 5)
+    console.log(props.alertId)
+    observations.value = await getObservationsByAlertId(props.alertId)
   } catch (err) {
     error.value = 'Failed to load observations. Please try again later.'
     console.error('Error fetching observations:', err)
@@ -31,21 +31,19 @@ const fetchObservations = async () => {
 onMounted(() => {
   fetchObservations()
 })
+
+watch(() => props.alertId, () => {
+  fetchObservations()
+})
 </script>
 
 <template>
   <div class="observation-list">
     <div class="container">
-      <h2 class="section-title">Recent GRB Observations</h2>
+      <h2 class="section-title">Observations for this Event</h2>
       <p class="section-subtitle">
-        Amateur astronomer observations of Gamma Ray Burst events detected by the Fermi Satellite
+        Amateur astronomer observations of this Gamma Ray Burst event
       </p>
-
-      <div class="submit-button-container">
-        <button @click="navigateToSubmit" class="submit-observation-button">
-          Submit Your Observation
-        </button>
-      </div>
 
       <div v-if="isLoading" class="loading">
         <div class="spinner"></div>
@@ -140,38 +138,8 @@ onMounted(() => {
 .section-subtitle {
   color: rgba(177, 156, 217, 0.9);
   text-align: center;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.submit-button-container {
-  display: flex;
-  justify-content: center;
   margin-bottom: 2rem;
-}
-
-.submit-observation-button {
-  padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
-  color: white;
-  border: 2px solid rgba(138, 43, 226, 0.5);
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  outline: none;
-  box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
-}
-
-.submit-observation-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 30px rgba(138, 43, 226, 0.7);
-  border-color: #8a2be2;
-}
-
-.submit-observation-button:active {
-  transform: translateY(-1px);
+  line-height: 1.6;
 }
 
 .loading {

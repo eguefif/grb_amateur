@@ -17,4 +17,9 @@ export const getObservations = async (offset = 0, limit = 5): Promise<GrbObserva
   return response.data
 }
 
+export const getObservationsByAlertId = async (alertId: number): Promise<GrbObservation[]> => {
+  const response = await api.get<GrbObservation[]>(`/observations/alert/${alertId}`)
+  return response.data
+}
+
 export default api

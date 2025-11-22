@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ObservationList from '@/components/ObservationList.vue'
+import AlertEventList from '@/components/AlertEventList.vue'
 </script>
 
 <template>
   <div class="home">
-    <ObservationList />
+    <AlertEventList />
   </div>
 </template>
 
