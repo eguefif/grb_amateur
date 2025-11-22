@@ -4,13 +4,13 @@ from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
 class SMTPClient:
     def __init__(self):
         self.password = os.getenv("FASTMAIL_PASS")
         self.login = os.getenv("FASTMAIL_LOGIN")
         self.smtp_domain = os.getenv("SMTP_DOMAIN")
         self.smtp_port = int(os.getenv("SMTP_PORT"))
-
 
     def send_emails(self, email_lists, alert):
         with SMTP_SSL(self.smtp_domain, port=self.smtp_port) as smtp:
@@ -25,10 +25,10 @@ class SMTPClient:
     def _get_message(self, alert):
         message = MIMEMultipart()
         message["From"] = self.login
-        message["Subject"] = 'Fermi GRB alert'
+        message["Subject"] = "Fermi GRB alert"
         body = self._make_body(alert)
         print("Sending alert message:\n", body)
-        message.attach(MIMEText(body, 'plain'))
+        message.attach(MIMEText(body, "plain"))
         return message
 
     def _make_body(self, alert):

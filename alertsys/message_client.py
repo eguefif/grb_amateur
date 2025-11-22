@@ -5,6 +5,7 @@ from gcn_kafka import Consumer
 # This import is used by the test mode
 from dummy_message import fake_messages
 
+
 class MessageClient:
     def __init__(self, test=False):
         self.test = test
@@ -44,19 +45,19 @@ class MessageClient:
         print("New Message")
         print(message)
         message = message.decode()
-        splits = message.split('\n')
+        splits = message.split("\n")
 
         data = {}
         for entry in splits:
             print("First line: ", entry)
             if len(entry) >= 1:
-                key, value = entry.split(':', 1)
+                key, value = entry.split(":", 1)
                 key = key.strip().lower()
                 value = value.strip()
                 if key in data.keys():
                     current_value = data[key]
                     if isinstance(current_value, str):
-                        data[key] = current_value + ' | ' + value 
+                        data[key] = current_value + " | " + value
                     else:
                         data[key] = [value]
                 else:
