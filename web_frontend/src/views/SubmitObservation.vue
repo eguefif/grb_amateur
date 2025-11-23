@@ -79,7 +79,7 @@ const handleCancel = () => {
 
       <ObservationForm
         :selected-event="selectedEvent"
-        :is-submitting="isSubmitting"
+        v-model:is-submitting="isSubmitting"
         @submit="handleSubmit"
         @cancel="handleCancel"
       />

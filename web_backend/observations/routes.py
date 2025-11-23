@@ -1,9 +1,10 @@
 from typing import Annotated
 import sqlalchemy
 from fastapi import APIRouter, Query, HTTPException, UploadFile
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from pathlib import Path
 import uuid
+import os
 
 from db import SessionDep
 from .models import Observation, ObservationOut
@@ -11,7 +12,9 @@ from . import service
 
 router = APIRouter(prefix="/observations")
 
-OBSERVATION_IMAGES_PATH = Path("./observation_images/")
+OBSERVATION_IMAGES_PATH = Path("./static/")
+if not os.path.exists(OBSERVATION_IMAGES_PATH):
+    raise "No static folder to create image in"
 
 
 @router.post("/{email}")
@@ -29,9 +32,12 @@ async def create_observation(
 async def create_upload_image(
     session: SessionDep, observation_id: int, file: UploadFile
 ) -> str:
-    image = Image.open(file.file)
+    try:
+        image = Image.open(file.file)
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=422, detail="Wrong format image")
     filename = f"{observation_id}-{uuid.uuid7()}"
-    filename_path = f"{Path(filename)}.webp"
+    filename_path = f"{filename}.webp"
     output_path = OBSERVATION_IMAGES_PATH / filename_path
     image.save(output_path, "WEBP", quality=85, method=6)
 
