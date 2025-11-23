@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Query
 
-from .models import Observation
+from .models import Observation, ObservationImage
 from users.models import User
 from db import SessionDep
 from sqlmodel import select
@@ -29,3 +29,19 @@ def read_observations(
 def read_observations_from_alert_id(session: SessionDep, id: int) -> list[Observation]:
     query = select(Observation).where(Observation.alert_id == id)
     return session.exec(query).all()
+
+
+def get_one_observation(session: SessionDep, id: int) -> Observation:
+    query = select(Observation).where(Observation.id == id)
+    result = session.exec(query).one()
+    return result
+
+
+def create_observation_file(
+    session: SessionDep, path: str, observation_id: int
+) -> ObservationImage:
+    observation_file = ObservationImage(path=path, observation_id=observation_id)
+    session.add(observation_file)
+    session.commit()
+    session.refresh(observation_file)
+    return observation_file
