@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-import os
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -16,7 +15,4 @@ app.include_router(users.routes.router)
 app.include_router(grb_alerts.routes.router)
 app.include_router(observations.routes.router)
 
-if os.getenv("DEV") == True:
-    app.mount("/static", StaticFiles(directory="static/dev"), name="static")
-elif os.getenv("PROD") == True:
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")

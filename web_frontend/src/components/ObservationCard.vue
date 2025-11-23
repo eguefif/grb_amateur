@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GrbObservation } from '@/types/observation'
 
-defineProps<{
+const props = defineProps<{
   observation: GrbObservation
 }>()
 
@@ -10,12 +10,19 @@ const getPlaceholderImage = (observationId: number) => {
   const color = colors[observationId % colors.length]
   return `https://placehold.co/400x300/${color}/white?text=Observation+${observationId}`
 }
+
+const getImageUrl = () => {
+  if (props.observation.file_path) {
+    return `/${props.observation.file_path}`
+  }
+  return getPlaceholderImage(props.observation.id)
+}
 </script>
 
 <template>
   <div class="observation-card">
     <div class="card-image">
-      <img :src="getPlaceholderImage(observation.id)" :alt="`Observation ${observation.id}`" />
+      <img :src="getImageUrl()" :alt="`Observation ${observation.id}`" />
     </div>
     <div class="card-content">
       <div class="card-header">

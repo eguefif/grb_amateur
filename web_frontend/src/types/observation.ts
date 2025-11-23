@@ -9,4 +9,5 @@ export interface GrbObservation {
   magnitude: string
   observed_time: string
   alert_id: number
+  file_path: string
 }
