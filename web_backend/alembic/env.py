@@ -21,10 +21,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
+# ruff: noqa: E402, F401
 from sqlmodel import SQLModel
-
-# ruff: noqa: F401
-from observations.models import Observation
+from observations.models import Observation, ObservationImage
 from users.models import User
 from grb_alerts.models import GRBAlert, GRBPosition
 

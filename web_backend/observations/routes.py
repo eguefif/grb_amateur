@@ -18,8 +18,11 @@ async def create_observation(
         raise HTTPException(status_code=404, detail="Email not found")
     return observation
 
+
 @router.post("/image/{observation_id}")
-async def create_upload_image(session: SessionDep, observation_id: int, file: UploadFile) -> str:
+async def create_upload_image(
+    session: SessionDep, observation_id: int, file: UploadFile
+) -> str:
     print("saving file for ", observation_id)
     print("saving file: ", file.filename)
     return file.filename
