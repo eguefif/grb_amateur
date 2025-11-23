@@ -5,8 +5,6 @@ from message_client import GCNClient
 from backend_calls import post_event
 
 
-
-
 def notify_users(message):
     print("-" * 50)
     print("New message from GCN: ", message["title"], "\n")

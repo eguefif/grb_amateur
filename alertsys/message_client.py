@@ -53,35 +53,40 @@ class GCNClient:
         message = message.decode()
         # In position message, GRB_RA and GRB_DEC are multiline fields
         # We remove the return line to parse them easily
-        message = message.replace(",\n", ",").strip()
+        message = message.strip()
 
         splits = message.split("\n")
 
         data = {}
-        for entry in splits:
+        splits = iter(splits)
+        while True:
+            try:
+                entry = next(splits)
+            except StopIteration:
+                break
             if len(entry) >= 1:
                 key, value = entry.split(":", 1)
                 key = key.strip().lower()
                 if key == "2nd_most_likely":
                     key = "second_most_likely"
                 value = value.strip()
-                if key in data.keys():
+                if key in data.keys() and key == "comments":
                     current_value = data[key]
                     if isinstance(current_value, str):
                         data[key] = current_value + " | " + value
                     else:
                         data[key] = [value]
+                elif key in ["grb_ra", "grb_dec"]:
+                    data[key] = self._get_coord(value, splits)
                 else:
                     data[key] = value
-        if "grb_ra" in data.keys():
-            data["grb_ra"] = self.format_grb_position(data["grb_ra"])
-        if "grb_dec" in data.keys():
-            data["grb_dec"] = self.format_grb_position(data["grb_dec"])
         return data
+
+    def _get_coord(self, line1, splits):
+        line2 = next(splits)
+        line3 = next(splits)
+        return self._format_grb_position(".".join([line1, line2, line3]))
 
     def _format_grb_position(self, data):
         """grb_ra and grb_dec has a lot of empty space that needs to be trim"""
-        return ", ".join([position.strip() for position in data.split(",")])
-
-    def format_grb_position(self, data):
         return ", ".join([position.strip() for position in data.split(",")])
