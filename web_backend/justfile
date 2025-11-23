@@ -2,6 +2,8 @@ setup:
     uv sync
     uvr db.py
     uvr alembic upgrade head
+    mkdir static
+    mkdir static/dev
 
 db-build:
     uv run db.py

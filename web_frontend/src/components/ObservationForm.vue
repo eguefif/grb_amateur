@@ -13,6 +13,7 @@ interface Props {
 interface Emits {
   (e: 'submit', formData: FormData): void
   (e: 'cancel'): void
+  (e: 'update:isSubmitting', value: boolean): void
 }
 
 const props = defineProps<Props>()
@@ -87,6 +88,7 @@ const handleSubmit = async () => {
   }
 
   try {
+    emit('update:isSubmitting', true)
     // Step 1: Submit observation data (without image)
     const response = await axios.post(`/observations/${email.value}`, observationData, {
       headers: {
@@ -119,9 +121,11 @@ const handleSubmit = async () => {
         successMessage.value = 'Observation submitted successfully, but image upload failed.'
       } finally {
         isUploadingImage.value = false
+        emit('update:isSubmitting', false)
       }
     } else {
       successMessage.value = 'Observation submitted successfully!'
+      emit('update:isSubmitting', false)
     }
 
     // Reset form
@@ -142,6 +146,7 @@ const handleSubmit = async () => {
     }, 2000)
 
   } catch (error) {
+    emit('update:isSubmitting', false)
     if (axios.isAxiosError(error) && error.response) {
       validationError.value = error.response.data.detail || 'Failed to submit observation'
     } else {
