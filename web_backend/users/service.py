@@ -22,6 +22,11 @@ def get_one(session: SessionDep, id: int) -> User | None:
     user = session.get(User, id)
     return user
 
+def get_one_by_email(session: Session, email: str) -> User | None:
+    query = select(User).where(User.email == email)
+    user = session.exec(query).one()
+    return user
+
 
 def send_confirmation_email(email: str):
     smtp_client = SMTPClient()
