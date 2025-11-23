@@ -1,6 +1,6 @@
 from typing import Annotated
 import sqlalchemy
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, UploadFile
 from db import SessionDep
 from .models import Observation
 from . import service
@@ -17,6 +17,12 @@ async def create_observation(
     except sqlalchemy.exc.NoResultFound:
         raise HTTPException(status_code=404, detail="Email not found")
     return observation
+
+@router.post("/image/{observation_id}")
+async def create_upload_image(session: SessionDep, observation_id: int, file: UploadFile) -> str:
+    print("saving file for ", observation_id)
+    print("saving file: ", file.filename)
+    return file.filename
 
 
 @router.get("/")
