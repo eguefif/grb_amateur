@@ -1,15 +1,17 @@
-from typing import Annotated, Optional
-from fastapi import Query, Request, Depends, Header, HTTPException
-from sqlmodel import select
 import json
 import hmac
 import hashlib
 import time
 import os
 
+from typing import Annotated, Optional
+from fastapi import Query, Request, Depends, Header, HTTPException
+from sqlmodel import select
+
 from db import SessionDep
 from smtp_client import SMTPClient
 from grb_alerts.models import GRBAlert, GRBPosition
+from users.models import User
 
 
 def add_alert(session: SessionDep, alert: GRBAlert) -> GRBAlert:
@@ -36,6 +38,9 @@ def read_events(
 
 
 def send_notification(session: SessionDep, data):
+    query = select(User.email).where(User.email_confirmed)
+    emails = session.exec(query).all()
+    print(emails)
     smtp_client = SMTPClient()
 
     body = "<html><body>"
@@ -54,9 +59,7 @@ def send_notification(session: SessionDep, data):
         return
     body += "<p>Emmanuel</p>"
     body += "</body></html>"
-    smtp_client.send_confirmation_email(
-        ["eguefif@gmail.com"], "Fermi GRB message", body
-    )
+    smtp_client.send_confirmation_email(emails, "Fermi GRB message", body)
 
 
 async def verify_signature(
