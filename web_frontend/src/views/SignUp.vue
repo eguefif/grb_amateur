@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 
 const email = ref('')
+const fullName = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
@@ -13,7 +15,7 @@ const isLoading = ref(false)
 const handleSubmit = async () => {
   errorMessage.value = ''
 
-  if (!email.value || !password.value || !confirmPassword.value) {
+  if (!email.value || !fullName.value || !password.value || !confirmPassword.value) {
     errorMessage.value = 'Please fill in all fields'
     return
   }
@@ -31,14 +33,28 @@ const handleSubmit = async () => {
   isLoading.value = true
 
   try {
-    // TODO: Implement API call to backend for user registration
-    console.log('Sign up with:', { email: email.value, password: password.value })
+    const userData = {
+      email: email.value,
+      full_name: fullName.value,
+      email_confirmed: false,
+      password: password.value,
+      password_confirmation: confirmPassword.value
+    }
 
-    // Placeholder - redirect to sign in after successful registration
-    // await new Promise(resolve => setTimeout(resolve, 1000))
-    // router.push({ name: 'sign-in' })
+    await axios.post('/users/', userData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    // Redirect to sign in after successful registration
+    router.push({ name: 'sign-in' })
   } catch (error) {
-    errorMessage.value = 'An error occurred during sign up. Please try again.'
+    if (axios.isAxiosError(error) && error.response) {
+      errorMessage.value = error.response.data.detail || 'An error occurred during sign up. Please try again.'
+    } else {
+      errorMessage.value = 'An error occurred during sign up. Please try again.'
+    }
   } finally {
     isLoading.value = false
   }
@@ -60,6 +76,18 @@ const handleSubmit = async () => {
               v-model="email"
               type="email"
               placeholder="your@email.com"
+              required
+              :disabled="isLoading"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="full-name">Full Name</label>
+            <input
+              id="full-name"
+              v-model="fullName"
+              type="text"
+              placeholder="John Doe"
               required
               :disabled="isLoading"
             />

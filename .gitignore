@@ -11,6 +11,7 @@ wheels/
 
 # Local dev
 .env
+static/
 
 # Vue front end app
 # Logs

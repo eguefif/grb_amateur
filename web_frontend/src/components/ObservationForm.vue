@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
 import type { GRBEvent } from './GRBEventSelector.vue'
 
 // Props
@@ -18,9 +19,9 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+const authStore = useAuthStore()
 
 // Form fields
-const email = ref('')
 const coordinates = ref('')
 const referenceSystem = ref('')
 const equinox = ref('')
@@ -46,16 +47,9 @@ const handleSubmit = async () => {
     return
   }
 
-  if (!email.value || !coordinates.value || !referenceSystem.value || !wavelengthRange.value ||
+  if (!coordinates.value || !referenceSystem.value || !wavelengthRange.value ||
       !instrument.value || !magnitude.value || !observationTime.value) {
     validationError.value = 'Please fill in all required fields'
-    return
-  }
-
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email.value)) {
-    validationError.value = 'Please enter a valid email address'
     return
   }
 
@@ -90,10 +84,11 @@ const handleSubmit = async () => {
   try {
     emit('update:isSubmitting', true)
     // Step 1: Submit observation data (without image)
-    const response = await axios.post(`/observations/${email.value}`, observationData, {
+    const response = await axios.post('/observations/', observationData, {
       headers: {
         'Content-Type': 'application/json',
-        'accept': 'application/json'
+        'accept': 'application/json',
+        ...authStore.getAuthHeader()
       }
     })
 
@@ -110,7 +105,8 @@ const handleSubmit = async () => {
         await axios.post(`/observations/image/${observationId}`, imageFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'accept': 'application/json'
+            'accept': 'application/json',
+            ...authStore.getAuthHeader()
           }
         })
 
@@ -129,7 +125,6 @@ const handleSubmit = async () => {
     }
 
     // Reset form
-    email.value = ''
     coordinates.value = ''
     referenceSystem.value = ''
     equinox.value = ''
@@ -197,22 +192,6 @@ const clearImage = () => {
 
       <div v-if="successMessage" class="success-message">
         {{ successMessage }}
-      </div>
-
-      <div class="form-group">
-        <label for="email" class="label">
-          Email Address <span class="required">*</span>
-        </label>
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          class="input"
-          placeholder="e.g., astronomer@example.com"
-          :disabled="isSubmitting"
-          required
-        />
-        <p class="help-text">Email address to receive alerts for this observation</p>
       </div>
 
       <div class="form-group">
