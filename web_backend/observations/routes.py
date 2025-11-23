@@ -10,6 +10,8 @@ from db import SessionDep
 from .models import Observation, ObservationOut
 from . import service
 
+from users.routes import CurrentActiveUserDep
+
 router = APIRouter(prefix="/observations")
 
 OBSERVATION_IMAGES_PATH = Path("./static/")
@@ -17,12 +19,14 @@ if not os.path.exists(OBSERVATION_IMAGES_PATH):
     raise "No static folder to create image in"
 
 
-@router.post("/{email}")
+@router.post("/")
 async def create_observation(
-    session: SessionDep, observation: Observation, email: str
+    session: SessionDep,
+    observation: Observation,
+    current_active_user: CurrentActiveUserDep,
 ) -> Observation:
     try:
-        observation = service.create_observation(session, observation, email)
+        observation = service.create_observation(session, observation)
     except sqlalchemy.exc.NoResultFound:
         raise HTTPException(status_code=404, detail="Email not found")
     return observation

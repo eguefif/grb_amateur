@@ -24,8 +24,11 @@ def main():
     print("Starting monitoring alert")
 
     while True:
-        for message in message_client.consume(timeout=1):
-            notify_users(message)
+        try:
+            for message in message_client.consume(timeout=1):
+                notify_users(message)
+        except Exception as e:
+            print("Fatal error: ", e)
 
 
 if __name__ == "__main__":

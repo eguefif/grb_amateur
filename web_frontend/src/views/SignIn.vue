@@ -40,7 +40,7 @@ const handleSubmit = async () => {
 
     // Redirect to home page
     router.push({ name: 'home-page' })
-  } catch (error) {
+  } catch {
     errorMessage.value = 'Invalid email or password. Please try again.'
   } finally {
     isLoading.value = false

@@ -2,16 +2,11 @@ from typing import Annotated
 from fastapi import Query
 
 from .models import Observation, ObservationImage, ObservationOut
-from users.models import User
 from db import SessionDep
 from sqlmodel import select
 
 
-def create_observation(
-    session: SessionDep, observation: Observation, email: str
-) -> Observation:
-    query = select(User).where(User.email == email)
-    session.exec(query).one()
+def create_observation(session: SessionDep, observation: Observation) -> Observation:
     session.add(observation)
     session.commit()
     session.refresh(observation)
