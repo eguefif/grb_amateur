@@ -38,10 +38,6 @@ const selectEvent = (event: GRBEvent) => {
   })
 }
 
-const goToSubmitObservation = () => {
-  router.push({ name: 'submit-observation' })
-}
-
 onMounted(() => {
   fetchEvents()
 })
@@ -54,9 +50,6 @@ onMounted(() => {
         <h1 class="title">Recent Gamma Ray Burst Events</h1>
         <p class="subtitle">Last 5 alerts from Fermi Satellite</p>
       </div>
-      <button @click="goToSubmitObservation" class="submit-button">
-        Submit Observation
-      </button>
     </div>
 
     <div v-if="isLoading" class="loading">
@@ -128,11 +121,7 @@ onMounted(() => {
 }
 
 .header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 2rem;
-  gap: 2rem;
 }
 
 .header-text {
@@ -149,26 +138,6 @@ onMounted(() => {
 .subtitle {
   font-size: 1rem;
   color: rgba(177, 156, 217, 0.7);
-}
-
-.submit-button {
-  background: rgba(138, 43, 226, 0.8);
-  color: white;
-  border: 2px solid rgba(138, 43, 226, 0.5);
-  padding: 0.875rem 1.75rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-}
-
-.submit-button:hover {
-  background: rgba(138, 43, 226, 1);
-  border-color: #8a2be2;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
 }
 
 .loading,
@@ -342,18 +311,8 @@ onMounted(() => {
     padding: 1rem;
   }
 
-  .header-section {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
   .title {
     font-size: 1.5rem;
-  }
-
-  .submit-button {
-    width: 100%;
   }
 
   .event-cards {

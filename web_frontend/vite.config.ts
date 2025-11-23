@@ -17,6 +17,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      '/users/token': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
       '/users': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
