@@ -33,6 +33,7 @@ const imagePreview = ref<string | null>(null)
 // Local state
 const validationError = ref('')
 const successMessage = ref('')
+const isUploadingImage = ref(false)
 
 const handleSubmit = async () => {
   validationError.value = ''
@@ -72,32 +73,56 @@ const handleSubmit = async () => {
     }
   }
 
-  // Prepare form data for submission
-  const formData = new FormData()
-  formData.append('coordinates', coordinates.value)
-  formData.append('celestial_reference', referenceSystem.value)
-  formData.append('equinox', equinox.value || '')
-  formData.append('epoch', equinox.value || '')
-  formData.append('wave_length', wavelengthRange.value)
-  formData.append('instrument', instrument.value)
-  formData.append('magnitude', magnitude.value)
-  formData.append('observed_time', observationTime.value)
-  formData.append('alert_id', props.selectedEvent.id.toString())
-
-  // Add image file if selected
-  if (imageFile.value) {
-    formData.append('image', imageFile.value)
+  // Prepare observation data as JSON (without image)
+  const observationData = {
+    coordinates: coordinates.value,
+    celestial_reference: referenceSystem.value,
+    equinox: equinox.value || '',
+    epoch: equinox.value || '',
+    wave_length: wavelengthRange.value,
+    instrument: instrument.value,
+    magnitude: magnitude.value,
+    observed_time: observationTime.value,
+    alert_id: props.selectedEvent.id
   }
 
   try {
-    await axios.post(`/observations/${email.value}`, formData, {
+    // Step 1: Submit observation data (without image)
+    const response = await axios.post(`/observations/${email.value}`, observationData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
         'accept': 'application/json'
       }
     })
 
-    successMessage.value = 'Observation submitted successfully!'
+    // Get the observation ID from the response
+    const observationId = response.data.id
+
+    // Step 2: Upload image if one was selected
+    if (imageFile.value && observationId) {
+      try {
+        isUploadingImage.value = true
+        const imageFormData = new FormData()
+        imageFormData.append('file', imageFile.value)
+
+        await axios.post(`/observations/image/${observationId}`, imageFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'accept': 'application/json'
+          }
+        })
+
+        successMessage.value = 'Observation and image submitted successfully!'
+      } catch (imageError) {
+        // Observation was created but image upload failed
+        console.error('Image upload failed:', imageError)
+        successMessage.value = 'Observation submitted successfully, but image upload failed.'
+      } finally {
+        isUploadingImage.value = false
+      }
+    } else {
+      successMessage.value = 'Observation submitted successfully!'
+    }
 
     // Reset form
     email.value = ''
@@ -336,11 +361,11 @@ const clearImage = () => {
     </div>
 
     <div class="form-actions">
-      <button type="button" @click="handleCancel" class="button button-secondary" :disabled="isSubmitting">
+      <button type="button" @click="handleCancel" class="button button-secondary" :disabled="isSubmitting || isUploadingImage">
         Return to Homepage
       </button>
-      <button type="submit" class="button button-primary" :disabled="isSubmitting || !selectedEvent">
-        {{ isSubmitting ? 'Submitting...' : 'Submit Observation' }}
+      <button type="submit" class="button button-primary" :disabled="isSubmitting || isUploadingImage || !selectedEvent">
+        {{ isUploadingImage ? 'Uploading Image...' : (isSubmitting ? 'Submitting...' : 'Submit Observation') }}
       </button>
     </div>
   </form>
