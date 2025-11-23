@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from typing import Annotated
 
 from fastapi import APIRouter, Query, HTTPException, BackgroundTasks
@@ -30,7 +30,9 @@ async def get_one(session: SessionDep, id: int) -> User | None:
 
 
 @router.post("/")
-async def create_user(session: SessionDep, user: User, background_tasks: BackgroundTasks) -> User:
+async def create_user(
+    session: SessionDep, user: User, background_tasks: BackgroundTasks
+) -> User:
     try:
         service.create(session, user)
     except IntegrityError:
@@ -39,11 +41,12 @@ async def create_user(session: SessionDep, user: User, background_tasks: Backgro
     background_tasks.add_task(service.send_confirmation_email, user.email)
     return service.create(session, user)
 
+
 @router.get("/confirm/{email}", response_class=HTMLResponse)
 def confirm_email(session: SessionDep, email: str) -> str:
     try:
         service.confirm_email(session, email)
-    except sqlalchemy.exc.NoResultFound:
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="Email not found")
     return """
                 <html><body>

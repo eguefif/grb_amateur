@@ -1,21 +1,16 @@
 from dotenv import load_dotenv
-import sys
 import os
-from smtp_client import SMTPClient
 
 from message_client import GCNClient
-from backend_calls import get_users, post_event
+from backend_calls import post_event
 
 
-import json
 
 
 def notify_users(message):
     print("-" * 50)
     print("New message from GCN: ", message["title"], "\n")
     post_event(message)
-    smtp_client = SMTPClient()
-    smtp_client.send_emails(['eguefif@gmail.com'], message)
     print()
 
 

@@ -4,13 +4,12 @@ from fastapi import Depends
 
 from dotenv import load_dotenv
 
-from sqlmodel import SQLModel, Session
+from sqlmodel import Session
 
 from sqlalchemy import text
 from sqlalchemy import create_engine
 
 import os
-import sys
 
 load_dotenv()
 

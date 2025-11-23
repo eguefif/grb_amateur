@@ -13,6 +13,7 @@ def add_alert(session: SessionDep, alert: GRBAlert) -> GRBAlert:
     session.refresh(alert)
     return alert
 
+
 def add_grb_position(session: SessionDep, grb_position: GRBPosition) -> GRBPosition:
     session.add(grb_position)
     session.commit()

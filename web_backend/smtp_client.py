@@ -1,5 +1,3 @@
-import base64
-import time
 import os
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText

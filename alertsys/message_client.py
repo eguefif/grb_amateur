@@ -14,7 +14,7 @@ from dummy_message import fake_messages
 class GCNClient:
     def __init__(self, test=False):
         self.test = test
-        if self.test == False:
+        if not self.test:
             client_id = os.getenv("GCN_CLIENT")
             key = os.getenv("GCN_KEY")
             self.consumer = Consumer(client_id=client_id, client_secret=key)
@@ -45,6 +45,7 @@ class GCNClient:
                 message = self._parse_message(message)
                 yield message
             time.sleep(1)
+        exit()
 
     def _parse_message(self, message):
         print("New Message")
@@ -61,8 +62,8 @@ class GCNClient:
             if len(entry) >= 1:
                 key, value = entry.split(":", 1)
                 key = key.strip().lower()
-                if key == '2nd_most_likely':
-                    key = 'second_most_likely'
+                if key == "2nd_most_likely":
+                    key = "second_most_likely"
                 value = value.strip()
                 if key in data.keys():
                     current_value = data[key]

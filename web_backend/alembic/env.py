@@ -1,3 +1,6 @@
+from sqlmodel import SQLModel
+from db import DB_URL
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -18,11 +21,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from grb_alerts.models import GRBAlert
-from users.models import User
-from observations.models import Observation
 
-from sqlmodel import SQLModel
 
 target_metadata = SQLModel.metadata
 
@@ -31,8 +30,6 @@ target_metadata = SQLModel.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-
-from db import DB_URL
 
 ALEMBIC_URL = DB_URL.replace("+psycopg", "")
 

@@ -18,4 +18,4 @@ def test_get_exists():
 
 def test_get_missing():
     resp = service.get_one(5)
-    assert resp == None
+    assert resp is None

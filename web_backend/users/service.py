@@ -1,6 +1,6 @@
 import os
 from typing import Annotated
-from fastapi import Query, HTTPException
+from fastapi import Query
 from sqlmodel import select
 
 from db import SessionDep
@@ -13,13 +13,12 @@ def read_users(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ) -> list[User]:
-    query = select(User).where(User.email_confirmed == True).offset(offset).limit(limit)
+    query = select(User).where(User.email_confirmed).offset(offset).limit(limit)
     users = session.exec(query).all()
     return users
 
 
 def get_one(session: SessionDep, id: int) -> User | None:
-
     user = session.get(User, id)
     return user
 
@@ -30,13 +29,14 @@ def send_confirmation_email(email: str):
 
     body = "<html><body>"
     body += "<h2>Hello</h2>"
+    body += "<p>Please confirm your email address by going to the following addres</p>"
     body += (
-        "<p>Please confirm your email address by going to the following addres</p>"
+        f'<p><a href="{backend_domain}/users/confirm/{email}">Confirmation link</a></p>'
     )
-    body += f'<p><a href="{backend_domain}/users/confirm/{email}">Confirmation link</a></p>'
     body += "<p>Emmanuel</p>"
     body += "</body></html>"
     smtp_client.send_confirmation_email([email], "Email Confirmation", body)
+
 
 def create(session: SessionDep, user: User) -> User:
     user.email_confirmed = False
@@ -44,6 +44,7 @@ def create(session: SessionDep, user: User) -> User:
     session.commit()
     session.refresh(user)
     return user
+
 
 def confirm_email(session: SessionDep, email: str) -> True:
     query = select(User).where(User.email == email)

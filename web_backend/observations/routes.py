@@ -1,6 +1,6 @@
 from typing import Annotated
 import sqlalchemy
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from db import SessionDep
 from .models import Observation
 from . import service
@@ -27,9 +27,10 @@ async def read_observations(
 ) -> list[Observation]:
     return service.read_observations(session, offset, limit)
 
+
 @router.get("/alert/{id}")
 async def read_observations_from_alert_id(
-        session: SessionDep,
-        id: int,
+    session: SessionDep,
+    id: int,
 ) -> list[Observation]:
     return service.read_observations_from_alert_id(session, id)

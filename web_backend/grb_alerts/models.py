@@ -26,6 +26,7 @@ class GRBAlert(SQLModel, table=True):
     comments: str
     observations: list["Observation"] = Relationship(back_populates="alert")
 
+
 class GRBPosition(SQLModel, table=True):
     __tablename__ = "grb_positions"
 

@@ -16,7 +16,6 @@ def generate_users(n=2):
 
 
 def create_users(n=2):
-    users = []
     with Session(engine) as session:
         for _ in range(n):
             user = User(email=faker.ascii_email())
