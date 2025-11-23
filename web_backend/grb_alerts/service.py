@@ -41,11 +41,11 @@ def send_notification(session: SessionDep, data):
     body = "<html><body>"
     body += f"<h2>This is a {data.notice_type}</h2>"
     body += f"<p>date: {data.notice_date}</p>"
-    if "position" in data.notice_type.lower():
+    if "alert" in data.notice_type.lower():
         body += f"""
             <p>Alert comments: {data.comments}</p>
             """
-    elif "alert" in data.notice_type.lower():
+    elif "position" in data.notice_type.lower():
         body += f"""
             <p>Alert grb_ra: {data.grb_ra}</p>
             <p>Alert grb_dec: {data.grb_dec}</p>
