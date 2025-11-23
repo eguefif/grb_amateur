@@ -32,7 +32,9 @@ def init_db():
         with engine.connect() as conn:
             # Drop tables in correct order (child tables first due to foreign keys)
             conn.execute(text("DROP TABLE IF EXISTS observations CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS observation_images CASCADE"))
             conn.execute(text("DROP TABLE IF EXISTS grb_alerts CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS grb_positions CASCADE"))
             conn.execute(text("DROP TABLE IF EXISTS users CASCADE"))
             conn.execute(text("TRUNCATE alembic_version"))
             conn.commit()
