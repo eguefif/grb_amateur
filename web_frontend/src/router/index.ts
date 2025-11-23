@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
+import HomePage from '@/views/HomePage.vue'
 import SubmitObservation from '@/views/SubmitObservation.vue'
 import EventDetail from '@/views/EventDetail.vue'
 
@@ -8,8 +8,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'home-page',
+      component: HomePage,
     },
     {
       path: '/submit-observation',

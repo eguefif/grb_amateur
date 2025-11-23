@@ -69,7 +69,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post(`/observations/${email.value}`, observationData, {
+    await axios.post(`/observations/${email.value}`, observationData, {
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json'

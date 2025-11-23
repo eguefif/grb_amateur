@@ -7,3 +7,4 @@ back:
 lint:
     cd web_backend && uv run ruff format && uv run ruff check --fix
     cd alertsys && uv run ruff format && uv run ruff check --fix
+    cd web_frontend && npm run lint -- --fix
