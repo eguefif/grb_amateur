@@ -12,7 +12,7 @@ const eventId = computed(() => Number(route.params.id))
 const event = computed(() => eventsStore.getEventById(eventId.value))
 
 const goBack = () => {
-  router.push({ name: 'home' })
+  router.push({ name: 'home-page' })
 }
 </script>
 

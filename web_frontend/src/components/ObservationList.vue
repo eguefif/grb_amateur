@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import ObservationCard from './ObservationCard.vue'
 import type { GrbObservation } from '@/types/observation'
 import { getObservationsByAlertId } from '@/services/api'
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const router = useRouter()
 
 const observations = ref<GrbObservation[]>([])
 const isLoading = ref(false)
@@ -35,11 +37,17 @@ onMounted(() => {
 watch(() => props.alertId, () => {
   fetchObservations()
 })
+
+const goBack = () => {
+  router.push({ name: 'home-page' })
+}
 </script>
 
 <template>
   <div class="observation-list">
     <div class="container">
+      <button @click="goBack" class="back-button">← Back to Events</button>
+
       <h2 class="section-title">Observations for this Event</h2>
       <p class="section-subtitle">
         Amateur astronomer observations of this Gamma Ray Burst event
@@ -211,6 +219,30 @@ watch(() => props.alertId, () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.back-button {
+  background: rgba(26, 26, 46, 0.8);
+  color: #b19cd9;
+  border: 2px solid rgba(138, 43, 226, 0.4);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 2rem;
+  outline: none;
+}
+
+.back-button:hover {
+  border-color: rgba(138, 43, 226, 0.7);
+  background: rgba(138, 43, 226, 0.2);
+  transform: translateX(-4px);
+}
+
+.back-button:active {
+  transform: translateX(-2px);
 }
 
 @media (max-width: 768px) {

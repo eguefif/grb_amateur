@@ -27,6 +27,8 @@ const wavelengthRange = ref('')
 const instrument = ref('')
 const magnitude = ref('')
 const observationTime = ref('')
+const imageFile = ref<File | null>(null)
+const imagePreview = ref<string | null>(null)
 
 // Local state
 const validationError = ref('')
@@ -55,23 +57,42 @@ const handleSubmit = async () => {
     return
   }
 
-  // Prepare observation data matching API schema
-  const observationData = {
-    coordinates: coordinates.value,
-    celestial_reference: referenceSystem.value,
-    equinox: equinox.value || '',
-    epoch: equinox.value || '',
-    wave_length: wavelengthRange.value,
-    instrument: instrument.value,
-    magnitude: magnitude.value,
-    observed_time: observationTime.value,
-    alert_id: props.selectedEvent.id
+  // Image file validation (optional but recommended)
+  if (imageFile.value) {
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (imageFile.value.size > maxSize) {
+      validationError.value = 'Image file size must be less than 10MB'
+      return
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+    if (!allowedTypes.includes(imageFile.value.type)) {
+      validationError.value = 'Image must be JPEG, PNG, GIF, or WebP format'
+      return
+    }
+  }
+
+  // Prepare form data for submission
+  const formData = new FormData()
+  formData.append('coordinates', coordinates.value)
+  formData.append('celestial_reference', referenceSystem.value)
+  formData.append('equinox', equinox.value || '')
+  formData.append('epoch', equinox.value || '')
+  formData.append('wave_length', wavelengthRange.value)
+  formData.append('instrument', instrument.value)
+  formData.append('magnitude', magnitude.value)
+  formData.append('observed_time', observationTime.value)
+  formData.append('alert_id', props.selectedEvent.id.toString())
+
+  // Add image file if selected
+  if (imageFile.value) {
+    formData.append('image', imageFile.value)
   }
 
   try {
-    await axios.post(`/observations/${email.value}`, observationData, {
+    await axios.post(`/observations/${email.value}`, formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'accept': 'application/json'
       }
     })
@@ -87,6 +108,8 @@ const handleSubmit = async () => {
     instrument.value = ''
     magnitude.value = ''
     observationTime.value = ''
+    imageFile.value = null
+    imagePreview.value = null
 
     // Notify parent component of success after a brief delay
     setTimeout(() => {
@@ -104,6 +127,32 @@ const handleSubmit = async () => {
 
 const handleCancel = () => {
   emit('cancel')
+}
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+
+  if (file) {
+    imageFile.value = file
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imagePreview.value = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const clearImage = () => {
+  imageFile.value = null
+  imagePreview.value = null
+  // Reset file input
+  const fileInput = document.getElementById('imageFile') as HTMLInputElement
+  if (fileInput) {
+    fileInput.value = ''
+  }
 }
 </script>
 
@@ -246,6 +295,42 @@ const handleCancel = () => {
             :disabled="isSubmitting"
             required
           />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="imageFile" class="label">
+          Observation Image
+        </label>
+        <div class="file-input-wrapper">
+          <input
+            id="imageFile"
+            type="file"
+            accept="image/*"
+            class="file-input"
+            @change="handleFileChange"
+            :disabled="isSubmitting"
+          />
+          <label for="imageFile" class="file-input-label">
+            <span class="file-input-icon">📷</span>
+            <span class="file-input-text">
+              {{ imageFile ? imageFile.name : 'Choose an image file' }}
+            </span>
+          </label>
+          <button
+            v-if="imageFile"
+            type="button"
+            @click="clearImage"
+            class="clear-image-btn"
+            :disabled="isSubmitting"
+          >
+            ✕
+          </button>
+        </div>
+        <p class="help-text">Optional: Upload an image of your observation (JPEG, PNG, GIF, WebP - Max 10MB)</p>
+
+        <div v-if="imagePreview" class="image-preview">
+          <img :src="imagePreview" alt="Image preview" />
         </div>
       </div>
     </div>
@@ -413,6 +498,99 @@ const handleCancel = () => {
   cursor: not-allowed;
 }
 
+/* File input styles */
+.file-input-wrapper {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.file-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(138, 43, 226, 0.4);
+  border-radius: 8px;
+  background: rgba(26, 26, 46, 0.6);
+  color: rgba(177, 156, 217, 0.9);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-input-label:hover {
+  border-color: #8a2be2;
+  background: rgba(26, 26, 46, 0.8);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+}
+
+.file-input:disabled + .file-input-label {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.file-input-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.file-input-text {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clear-image-btn {
+  padding: 0.5rem 0.75rem;
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  color: #fca5a5;
+  cursor: pointer;
+  font-size: 1.25rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.clear-image-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+.clear-image-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.image-preview {
+  margin-top: 1rem;
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(26, 26, 46, 0.4);
+  max-width: 500px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 @media (max-width: 768px) {
   .observation-form {
     padding: 1.5rem;
@@ -428,6 +606,19 @@ const handleCancel = () => {
 
   .button {
     width: 100%;
+  }
+
+  .file-input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clear-image-btn {
+    width: 100%;
+  }
+
+  .image-preview {
+    max-width: 100%;
   }
 }
 </style>
