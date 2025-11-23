@@ -1,17 +1,51 @@
 <script setup lang="ts">
-import EmailRegistration from './EmailRegistration.vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+const goToSignUp = () => {
+  router.push({ name: 'sign-up' })
+}
+
+const goToSignIn = () => {
+  router.push({ name: 'sign-in' })
+}
+
+const goToHome = () => {
+  router.push({ name: 'home-page' })
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push({ name: 'home-page' })
+}
+
+const submitObservation = () => {
+  router.push({ name: 'submit-observation' })
+}
 </script>
 
 <template>
   <header class="header">
     <div class="container">
       <div class="header-content">
-        <div class="logo">
+        <div class="logo" @click="goToHome">
           <div class="logo-icon">⚡</div>
           <h1 class="logo-text">Gamma Ray Burst</h1>
         </div>
 
-        <EmailRegistration />
+        <div class="auth-buttons">
+          <template v-if="!authStore.isAuthenticated">
+            <button @click="goToSignIn" class="btn btn-secondary">Sign In</button>
+            <button @click="goToSignUp" class="btn btn-primary">Sign Up</button>
+          </template>
+          <template v-else>
+            <button @click="submitObservation" class="btn btn-primary">Submit Observation</button>
+            <button @click="handleLogout" class="btn btn-secondary">Logout</button>
+          </template>
+        </div>
       </div>
     </div>
   </header>
@@ -81,6 +115,12 @@ import EmailRegistration from './EmailRegistration.vue'
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+  opacity: 0.8;
 }
 
 .logo-icon {
@@ -114,6 +154,48 @@ import EmailRegistration from './EmailRegistration.vue'
   text-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
 }
 
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn {
+  padding: 0.625rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8a2be2 0%, #5a189a 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #9d4edd 0%, #6b1fb1 100%);
+  box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(138, 43, 226, 0.6);
+}
+
+.btn-secondary:hover {
+  background: rgba(138, 43, 226, 0.1);
+  border-color: rgba(138, 43, 226, 0.8);
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
@@ -127,6 +209,10 @@ import EmailRegistration from './EmailRegistration.vue'
 
   .logo-text {
     font-size: 1.25rem;
+  }
+
+  .auth-buttons {
+    justify-content: center;
   }
 }
 </style>
