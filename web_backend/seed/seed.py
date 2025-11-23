@@ -58,7 +58,9 @@ def delete_observations():
 def delete_observation_images():
     """Truncate observation_images table."""
     with Session(engine) as session:
-        session.execute(text("TRUNCATE TABLE observation_images RESTART IDENTITY CASCADE"))
+        session.execute(
+            text("TRUNCATE TABLE observation_images RESTART IDENTITY CASCADE")
+        )
         session.commit()
         print("Observation images table truncated")
 

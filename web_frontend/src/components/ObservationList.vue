@@ -20,7 +20,6 @@ const fetchObservations = async () => {
   isLoading.value = true
   error.value = null
   try {
-    console.log(props.alertId)
     observations.value = await getObservationsByAlertId(props.alertId)
   } catch (err) {
     error.value = 'Failed to load observations. Please try again later.'

@@ -6,7 +6,7 @@ from pathlib import Path
 import uuid
 
 from db import SessionDep
-from .models import Observation
+from .models import Observation, ObservationOut
 from . import service
 
 router = APIRouter(prefix="/observations")
@@ -39,18 +39,18 @@ async def create_upload_image(
     return file.filename
 
 
-@router.get("/")
+@router.get("/", response_model=list[ObservationOut])
 async def read_observations(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-) -> list[Observation]:
+) -> list[ObservationOut]:
     return service.read_observations(session, offset, limit)
 
 
-@router.get("/alert/{id}")
+@router.get("/alert/{id}", response_model=list[ObservationOut])
 async def read_observations_from_alert_id(
     session: SessionDep,
     id: int,
-) -> list[Observation]:
+) -> list[ObservationOut]:
     return service.read_observations_from_alert_id(session, id)

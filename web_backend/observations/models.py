@@ -2,10 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from grb_alerts.models import GRBAlert
 
 
-class Observation(SQLModel, table=True):
-    __tablename__ = "observations"
-
-    id: int | None = Field(default=None, primary_key=True)
+class ObservationBase(SQLModel):
     coordinates: str
     celestial_reference: str
     equinox: str
@@ -15,10 +12,20 @@ class Observation(SQLModel, table=True):
     magnitude: str
     observed_time: str
 
+
+class Observation(ObservationBase, table=True):
+    __tablename__ = "observations"
+    id: int | None = Field(default=None, primary_key=True)
+
     alert_id: int = Field(default=None, foreign_key="grb_alerts.id")
     alert: GRBAlert = Relationship(back_populates="observations")
 
     observation_image: "ObservationImage" = Relationship(back_populates="observation")
+
+
+class ObservationOut(ObservationBase):
+    id: int
+    file_path: str
 
 
 class ObservationImage(SQLModel, table=True):
