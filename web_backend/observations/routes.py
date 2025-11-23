@@ -1,11 +1,17 @@
 from typing import Annotated
 import sqlalchemy
 from fastapi import APIRouter, Query, HTTPException, UploadFile
+from PIL import Image
+from pathlib import Path
+import uuid
+
 from db import SessionDep
 from .models import Observation
 from . import service
 
 router = APIRouter(prefix="/observations")
+
+OBSERVATION_IMAGES_PATH = Path("./observation_images/")
 
 
 @router.post("/{email}")
@@ -23,8 +29,13 @@ async def create_observation(
 async def create_upload_image(
     session: SessionDep, observation_id: int, file: UploadFile
 ) -> str:
-    print("saving file for ", observation_id)
-    print("saving file: ", file.filename)
+    image = Image.open(file.file)
+    filename = f"{observation_id}-{uuid.uuid7()}"
+    filename_path = f"{Path(filename)}.webp"
+    output_path = OBSERVATION_IMAGES_PATH / filename_path
+    image.save(output_path, "WEBP", quality=85, method=6)
+
+    service.create_observation_file(session, f"{output_path}", observation_id)
     return file.filename
 
 
