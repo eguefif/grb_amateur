@@ -59,5 +59,3 @@ class GRBPosition(SQLModel, table=True):
     gal_coords: str
     ecl_coords: str
     comments: str
-
-    observations: list["Observation"] = Relationship(back_populates="grb_position")
