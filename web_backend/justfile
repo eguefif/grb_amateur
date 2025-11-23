@@ -4,7 +4,7 @@ setup:
     uvr alembic upgrade head
 
 db-build:
-    uv run db.py --drop_db
+    uv run db.py
     uv run alembic upgrade head
     uv run python -m seed.seed
 
