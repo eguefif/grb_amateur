@@ -1,20 +1,15 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=grb_db
+    env_file: ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
     networks:
-      - app-network
+      - webnet
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -26,5 +21,5 @@ volumes:
     driver: local
 
 networks:
-  app-network:
+  webnet:
     driver: bridge
