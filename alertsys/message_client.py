@@ -47,7 +47,7 @@ class GCNClient:
             time.sleep(1)
         exit()
 
-    def _parse_message(self, message):
+    def _parse_message(self, message) -> dict:
         print("New Message")
         print(message)
         message = message.decode()
