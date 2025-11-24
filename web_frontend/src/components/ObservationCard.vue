@@ -17,6 +17,17 @@ const getImageUrl = () => {
   }
   return getPlaceholderImage(props.observation.id)
 }
+
+const getCoordinateSystemLabel = (system: string) => {
+  const labels: Record<string, string> = {
+    'icrs_j2000': 'ICRS/J2000',
+    'fk5_j2000': 'FK5/J2000',
+    'b1950': 'B1950',
+    'galactic': 'Galactic',
+    'current_equinox': 'Current Equinox'
+  }
+  return labels[system] || system
+}
 </script>
 
 <template>
@@ -38,24 +49,12 @@ const getImageUrl = () => {
           <span class="value">{{ observation.coordinates }}</span>
         </div>
         <div class="detail-row">
-          <span class="label">Reference:</span>
-          <span class="value">{{ observation.celestial_reference }} ({{ observation.equinox }})</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Epoch:</span>
-          <span class="value">{{ observation.epoch }}</span>
+          <span class="label">Coordinate System:</span>
+          <span class="value">{{ getCoordinateSystemLabel(observation.coordinate_sytem) }}</span>
         </div>
         <div class="detail-row">
           <span class="label">Instrument:</span>
           <span class="value">{{ observation.instrument }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Wavelength:</span>
-          <span class="value">{{ observation.wave_length }}</span>
-        </div>
-        <div class="detail-row">
-          <span class="label">Magnitude:</span>
-          <span class="value">{{ observation.magnitude }}</span>
         </div>
       </div>
     </div>
