@@ -21,13 +21,10 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 const authStore = useAuthStore()
 
-// Form fields
+// Form fields - simplified to match new model
 const coordinates = ref('')
-const referenceSystem = ref('')
-const equinox = ref('')
-const wavelengthRange = ref('')
+const coordinateSystem = ref('')
 const instrument = ref('')
-const magnitude = ref('')
 const observationTime = ref('')
 const imageFile = ref<File | null>(null)
 const imagePreview = ref<string | null>(null)
@@ -47,8 +44,7 @@ const handleSubmit = async () => {
     return
   }
 
-  if (!coordinates.value || !referenceSystem.value || !wavelengthRange.value ||
-      !instrument.value || !magnitude.value || !observationTime.value) {
+  if (!coordinates.value || !coordinateSystem.value || !instrument.value || !observationTime.value) {
     validationError.value = 'Please fill in all required fields'
     return
   }
@@ -71,12 +67,8 @@ const handleSubmit = async () => {
   // Prepare observation data as JSON (without image)
   const observationData = {
     coordinates: coordinates.value,
-    celestial_reference: referenceSystem.value,
-    equinox: equinox.value || '',
-    epoch: equinox.value || '',
-    wave_length: wavelengthRange.value,
+    coordinate_sytem: coordinateSystem.value,
     instrument: instrument.value,
-    magnitude: magnitude.value,
     observed_time: observationTime.value,
     alert_id: props.selectedEvent.id
   }
@@ -126,11 +118,8 @@ const handleSubmit = async () => {
 
     // Reset form
     coordinates.value = ''
-    referenceSystem.value = ''
-    equinox.value = ''
-    wavelengthRange.value = ''
+    coordinateSystem.value = ''
     instrument.value = ''
-    magnitude.value = ''
     observationTime.value = ''
     imageFile.value = null
     imagePreview.value = null
@@ -196,7 +185,7 @@ const clearImage = () => {
 
       <div class="form-group">
         <label for="coordinates" class="label">
-          Best Available Coordinates <span class="required">*</span>
+          Coordinates <span class="required">*</span>
         </label>
         <input
           id="coordinates"
@@ -207,104 +196,58 @@ const clearImage = () => {
           :disabled="isSubmitting"
           required
         />
-        <p class="help-text">Provide the most accurate coordinates you obtained</p>
+        <p class="help-text">Provide the coordinates you obtained</p>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="referenceSystem" class="label">
-            Celestial Reference System/Frame <span class="required">*</span>
-          </label>
-          <input
-            id="referenceSystem"
-            v-model="referenceSystem"
-            type="text"
-            class="input"
-            placeholder="e.g., ICRS, J2000, FK5"
-            :disabled="isSubmitting"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="equinox" class="label">
-            Equinox and Epoch
-          </label>
-          <input
-            id="equinox"
-            v-model="equinox"
-            type="text"
-            class="input"
-            placeholder="e.g., J2000.0, B1950.0"
-            :disabled="isSubmitting"
-          />
-          <p class="help-text">Specify if necessary for your reference system</p>
-        </div>
+      <div class="form-group">
+        <label for="coordinateSystem" class="label">
+          Coordinate System <span class="required">*</span>
+        </label>
+        <select
+          id="coordinateSystem"
+          v-model="coordinateSystem"
+          class="input"
+          :disabled="isSubmitting"
+          required
+        >
+          <option value="" disabled>Select a coordinate system</option>
+          <option value="icrs_j2000">ICRS/J2000</option>
+          <option value="fk5_j2000">FK5/J2000</option>
+          <option value="b1950">B1950</option>
+          <option value="galactic">Galactic</option>
+          <option value="current_equinox">Current Equinox</option>
+        </select>
+        <p class="help-text">Specify the coordinate system/reference frame used</p>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="wavelengthRange" class="label">
-            Wavelength Range <span class="required">*</span>
-          </label>
-          <input
-            id="wavelengthRange"
-            v-model="wavelengthRange"
-            type="text"
-            class="input"
-            placeholder="e.g., Optical (400-700nm), UV, IR"
-            :disabled="isSubmitting"
-            required
-          />
-          <p class="help-text">Range from which astrometry is obtained</p>
-        </div>
-
-        <div class="form-group">
-          <label for="instrument" class="label">
-            Instrument <span class="required">*</span>
-          </label>
-          <input
-            id="instrument"
-            v-model="instrument"
-            type="text"
-            class="input"
-            placeholder="e.g., Schmidt-Cassegrain 14&quot; + CCD"
-            :disabled="isSubmitting"
-            required
-          />
-        </div>
+      <div class="form-group">
+        <label for="instrument" class="label">
+          Instrument <span class="required">*</span>
+        </label>
+        <input
+          id="instrument"
+          v-model="instrument"
+          type="text"
+          class="input"
+          placeholder="e.g., Schmidt-Cassegrain 14&quot; + CCD"
+          :disabled="isSubmitting"
+          required
+        />
+        <p class="help-text">Describe your observation instrument</p>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="magnitude" class="label">
-            Magnitude <span class="required">*</span>
-          </label>
-          <input
-            id="magnitude"
-            v-model="magnitude"
-            type="text"
-            class="input"
-            placeholder="e.g., R=18.5±0.2 mag"
-            :disabled="isSubmitting"
-            required
-          />
-          <p class="help-text">Clarify the magnitude and band/filter used</p>
-        </div>
-
-        <div class="form-group">
-          <label for="observationTime" class="label">
-            Time of Observation <span class="required">*</span>
-          </label>
-          <input
-            id="observationTime"
-            v-model="observationTime"
-            type="datetime-local"
-            class="input"
-            :disabled="isSubmitting"
-            required
-          />
-        </div>
+      <div class="form-group">
+        <label for="observationTime" class="label">
+          Time of Observation <span class="required">*</span>
+        </label>
+        <input
+          id="observationTime"
+          v-model="observationTime"
+          type="datetime-local"
+          class="input"
+          :disabled="isSubmitting"
+          required
+        />
       </div>
 
       <div class="form-group">

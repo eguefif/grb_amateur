@@ -1,15 +1,18 @@
+from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
 from grb_alerts.models import GRBAlert
 
+class CoordinateSystem(str, Enum):
+    icrs_j2000 = 'icrs_j2000'
+    fk5_j2000 = 'fk5_j2000'
+    b1950 = 'b1950'
+    galactic = 'galactic'
+    current_equinox = 'current_equinox'
 
 class ObservationBase(SQLModel):
     coordinates: str
-    celestial_reference: str
-    equinox: str
-    epoch: str
-    wave_length: str
+    coordinate_system: CoordinateSystem = CoordinateSystem.icrs_j2000
     instrument: str
-    magnitude: str
     observed_time: str
 
 
