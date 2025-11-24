@@ -7,7 +7,7 @@ from db import SessionDep
 router = APIRouter(prefix="/events")
 
 
-@router.post("/")
+@router.post("/alert")
 async def add_event(
     session: SessionDep,
     alert: GRBAlert,

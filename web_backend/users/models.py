@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 
 
@@ -21,3 +22,8 @@ class UserIn(UserBase):
 
 class UserOut(UserBase):
     id: int
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

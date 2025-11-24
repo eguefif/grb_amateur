@@ -1,5 +1,10 @@
 from typing import Annotated
-from fastapi import Query
+from PIL import Image
+from pathlib import Path
+import uuid
+import os
+
+from fastapi import Query, File
 
 from .models import Observation, ObservationImage, ObservationOut
 from db import SessionDep
@@ -40,12 +45,6 @@ def read_observations_from_alert_id(
     return observations_out
 
 
-def get_one_observation(session: SessionDep, id: int) -> Observation:
-    query = select(Observation).where(Observation.id == id)
-    result = session.exec(query).one()
-    return result
-
-
 def create_observation_file(
     session: SessionDep, path: str, observation_id: int
 ) -> ObservationImage:
@@ -54,3 +53,17 @@ def create_observation_file(
     session.commit()
     session.refresh(observation_file)
     return observation_file
+
+
+def save_image(session: SessionDep, observation_id: int, file: File):
+    OBSERVATION_IMAGES_PATH = Path("./static/")
+    if not os.path.exists(OBSERVATION_IMAGES_PATH):
+        raise "No static folder to create image in"
+
+    image = Image.open(file)
+    filename = f"{observation_id}-{uuid.uuid7()}"
+    filename_path = f"{filename}.webp"
+    output_path = OBSERVATION_IMAGES_PATH / filename_path
+    image.save(output_path, "WEBP", quality=85, method=6)
+
+    create_observation_file(session, f"{output_path}", observation_id)
