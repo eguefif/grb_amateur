@@ -67,6 +67,12 @@ async def verify_signature(
     x_signature: Annotated[Optional[str], Header()] = None,
     x_timestamp: Annotated[Optional[str], Header()] = None,
 ):
+    """This function check if the post sender for alert
+    is using the shared secret. This uses a hash message built from the
+    timestamp and the trigger_num unique to an alert. The secred is not
+    sent but used to decode. If we can decode, it means the sender is a
+    trusted source
+    """
     if not x_signature:
         raise HTTPException(status_code=401, detail="Not authorized")
 

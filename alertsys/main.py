@@ -26,7 +26,7 @@ def main():
     while True:
         try:
             for message in message_client.consume(timeout=1):
-                if 'Fermi-GBM Test Position' not in message["notice_type"]:
+                if "test position" not in message["notice_type"]:
                     notify_users(message)
         except Exception as e:
             print("Fatal error: ", e)

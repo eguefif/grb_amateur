@@ -4,6 +4,7 @@ import SubmitObservation from '@/views/SubmitObservation.vue'
 import EventDetail from '@/views/EventDetail.vue'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
+import EmailConfirmed from '@/views/EmailConfirmed.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/sign-in',
       name: 'sign-in',
       component: SignIn,
+    },
+    {
+      path: '/email-confirmed',
+      name: 'email-confirmed',
+      component: EmailConfirmed,
     },
   ],
 })

@@ -27,7 +27,7 @@ def post_event(event):
             f"{BACKEND_URL}events/position", json=event, headers=headers
         )
     elif "alert" in event["notice_type"].lower():
-        response = httpx.post(f"{BACKEND_URL}events/", json=event, headers=headers)
+        response = httpx.post(f"{BACKEND_URL}events/alert", json=event, headers=headers)
     else:
         print("Unknown type of message")
     print(response)
