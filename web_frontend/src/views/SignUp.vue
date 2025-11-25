@@ -41,7 +41,7 @@ const handleSubmit = async () => {
       password_confirmation: confirmPassword.value
     }
 
-    await axios.post('/users/', userData, {
+    await axios.post('/api/users/', userData, {
       headers: {
         'Content-Type': 'application/json'
       }

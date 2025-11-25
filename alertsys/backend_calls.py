@@ -5,9 +5,6 @@ import os
 import hashlib
 
 
-BACKEND_URL = "http://127.0.0.1:8000/"
-
-
 def get_signature(timestamp, event):
     SECRET = os.getenv("SECRET_KEY")
 
@@ -18,6 +15,7 @@ def get_signature(timestamp, event):
 
 
 def post_event(event):
+    BACKEND_URL = os.getenv("BACKEND_URL")
     timestamp = str(time.time())
     headers = {"X-Signature": get_signature(timestamp, event), "X-Timestamp": timestamp}
 

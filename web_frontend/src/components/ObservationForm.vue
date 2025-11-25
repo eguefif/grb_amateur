@@ -76,7 +76,7 @@ const handleSubmit = async () => {
   try {
     emit('update:isSubmitting', true)
     // Step 1: Submit observation data (without image)
-    const response = await axios.post('/observations/', observationData, {
+    const response = await axios.post('/api/observations/', observationData, {
       headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
@@ -94,7 +94,7 @@ const handleSubmit = async () => {
         const imageFormData = new FormData()
         imageFormData.append('file', imageFile.value)
 
-        await axios.post(`/observations/image/${observationId}`, imageFormData, {
+        await axios.post(`/api/observations/image/${observationId}`, imageFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'accept': 'application/json',

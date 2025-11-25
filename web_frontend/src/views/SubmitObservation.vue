@@ -25,7 +25,7 @@ const handleSubmit = async (formData: FormData) => {
 
   try {
     // TODO: Replace with actual API endpoint
-    await axios.post('/observations/', formData, {
+    await axios.post('/api/observations/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

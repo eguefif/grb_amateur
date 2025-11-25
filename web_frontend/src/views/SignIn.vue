@@ -29,7 +29,7 @@ const handleSubmit = async () => {
     formData.append('username', email.value)
     formData.append('password', password.value)
 
-    const response = await axios.post('/users/token', formData.toString(), {
+    const response = await axios.post('/api/users/token', formData.toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
