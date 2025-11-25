@@ -1,26 +1,21 @@
-from faker import Faker
 from db import engine
 from sqlmodel import Session
 from sqlalchemy import text
 from users.models import User
 from grb_alerts.models import GRBAlert, GRBPosition
-from observations.models import Observation, ObservationImage
-
-faker = Faker()
+from observations.models import Observation, ObservationImage, CoordinateSystem
 
 
-def generate_users(n=2):
-    """Generate fake user data and return as list of dicts."""
-    print(f"Generating {n} users")
-    return [{"email": faker.ascii_email()} for _ in range(n)]
-
-
-def create_users(n=2):
+def create_users():
+    """Create a single test user."""
     with Session(engine) as session:
-        for _ in range(n):
-            user = User(email=faker.ascii_email(), email_confirmed=True)
-            session.add(user)
+        user = User(full_name="Emmanuel Guefif",
+                    email="test@grb-amateur.space",
+                    hashed_password="nothing",
+                    email_confirmed=False)
+        session.add(user)
         session.commit()
+        print("Created test user: test@grb-amateur.space")
 
 
 def delete_users():
@@ -202,21 +197,21 @@ def generate_observations():
     return [
         {
             "coordinates": "RA: 08h 13m 48.0s, Dec: -23° 40' 12.0\"",
-            "coordinate_sytem": "ICRS",
+            "coordinate_system": CoordinateSystem.icrs_j2000,
             "instrument": 'Schmidt-Cassegrain 14" + CCD',
             "observed_time": "2024-08-15T14:45:30",
             "alert_id": 0,
         },
         {
             "coordinates": "RA: 17h 07m 07.2s, Dec: +45° 19' 12.0\"",
-            "coordinate_sytem": "ICRS",
+            "coordinate_system": CoordinateSystem.fk5_j2000,
             "instrument": 'Newtonian 10" + CCD',
             "observed_time": "2024-08-14T03:45:15",
             "alert_id": 1,
         },
         {
             "coordinates": "RA: 05h 56m 28.8s, Dec: -12° 27' 00.0\"",
-            "coordinate_sytem": "ICRS",
+            "coordinate_system": CoordinateSystem.icrs_j2000,
             "instrument": 'Refractor 6" + CCD',
             "observed_time": "2024-08-13T20:15:45",
             "alert_id": 1,

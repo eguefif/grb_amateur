@@ -1,5 +1,6 @@
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Enum as SAEnum
 from grb_alerts.models import GRBAlert
 
 class CoordinateSystem(str, Enum):
