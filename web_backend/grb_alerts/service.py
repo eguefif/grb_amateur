@@ -59,7 +59,7 @@ def send_notification(session: SessionDep, data):
         return
     body += "<p>Emmanuel</p>"
     body += "</body></html>"
-    smtp_client.send_confirmation_email(emails, "Fermi GRB message", body)
+    smtp_client.send_email(emails, "Fermi GRB message", body)
 
 
 async def verify_signature(

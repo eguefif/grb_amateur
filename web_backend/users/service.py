@@ -27,7 +27,7 @@ def send_confirmation_email(email: str):
     )
     body += "<p>Emmanuel</p>"
     body += "</body></html>"
-    smtp_client.send_confirmation_email([email], "Email Confirmation", body)
+    smtp_client.send_email([email], "Email Confirmation", body)
 
 
 def get_password_hash(password: str) -> str:
