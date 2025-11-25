@@ -44,7 +44,7 @@ const fetchEvents = async () => {
   isLoadingEvents.value = true
   errorMessage.value = ''
   try {
-    const response = await axios.get('/events/last_events')
+    const response = await axios.get('/api/events/last_events')
     events.value = response.data
   } catch (error) {
     errorMessage.value = 'Failed to load recent GRB events'

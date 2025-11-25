@@ -2,6 +2,7 @@ import axios from 'axios'
 import type { GrbObservation } from '@/types/observation'
 
 const api = axios.create({
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },

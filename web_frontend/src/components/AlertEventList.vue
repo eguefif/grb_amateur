@@ -16,7 +16,7 @@ const fetchEvents = async () => {
   isLoading.value = true
   error.value = null
   try {
-    const response = await axios.get('/events/last_events')
+    const response = await axios.get('/api/events/last_events')
     const sortedEvents = response.data.sort((a: GRBEvent, b: GRBEvent) => {
       const dateA = new Date(`${a.grb_date} ${a.grb_time}`)
       const dateB = new Date(`${b.grb_date} ${b.grb_time}`)
