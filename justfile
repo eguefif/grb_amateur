@@ -1,5 +1,5 @@
 run-dev: 
-    docker compose -f compose-core.yml up
+    docker compose -f compose-dev.yml up
 
 run-prod:
     docker compose -f compose-core.yml -f compose-prod.yml up

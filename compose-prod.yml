@@ -8,6 +8,7 @@ services:
     volumes:
       - ./web_frontend/dist:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./../cert/:/etc/ssl/
     restart: unless-stopped
     depends_on:
       - alertsys
