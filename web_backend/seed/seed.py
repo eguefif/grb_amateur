@@ -9,10 +9,12 @@ from observations.models import Observation, ObservationImage, CoordinateSystem
 def create_users():
     """Create a single test user."""
     with Session(engine) as session:
-        user = User(full_name="Emmanuel Guefif",
-                    email="test@grb-amateur.space",
-                    hashed_password="nothing",
-                    email_confirmed=False)
+        user = User(
+            full_name="Emmanuel Guefif",
+            email="test@grb-amateur.space",
+            hashed_password="nothing",
+            email_confirmed=False,
+        )
         session.add(user)
         session.commit()
         print("Created test user: test@grb-amateur.space")

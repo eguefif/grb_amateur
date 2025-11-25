@@ -65,7 +65,7 @@ class SMTPClient:
                 print(f"Sending email to : {email}")
                 message = self._get_message(email, subject, body)
                 print(message.as_string())
-                #smtp.sendmail(self.login, email, message.as_string())
+                # smtp.sendmail(self.login, email, message.as_string())
 
     def _get_message(self, email, subject, body):
         """
@@ -81,16 +81,18 @@ class SMTPClient:
         """
         message = MIMEMultipart()
         message["From"] = formataddr((self.sender_name, self.sender))
-        print(f"Sending email from : {message["From"]}")
+        print(f"Sending email from : {message['From']}")
         message["To"] = email
         message["Subject"] = subject
-        message["X-PM-Message-Stream"] = "outbound"#self.postmark_stream
+        message["X-PM-Message-Stream"] = "outbound"  # self.postmark_stream
         print("Sending message:\n", body)
         message.attach(MIMEText(body, "html"))
         return message
 
+
 if __name__ == "__main__":
     from dotenv import load_dotenv
+
     load_dotenv()
     smtp = SMTPClient()
     smtp.send_email(["test@grb-amateur.space"], "test", "test")
