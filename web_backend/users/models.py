@@ -6,6 +6,7 @@ class UserBase(SQLModel):
     email: str = Field(index=True, unique=True)
     full_name: str
     email_confirmed: bool | None = False
+    receive_notification: bool | None = False
 
 
 class User(UserBase, table=True):
