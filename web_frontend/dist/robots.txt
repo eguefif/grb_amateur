@@ -1,0 +1,194 @@
+# Disallow all web crawlers and bots
+User-agent: *
+Disallow: /
+
+# Explicitly disallow common search engine bots
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Googlebot-Image
+Disallow: /
+
+User-agent: Googlebot-News
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+User-agent: Sogou
+Disallow: /
+
+User-agent: Exabot
+Disallow: /
+
+User-agent: facebot
+Disallow: /
+
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: Applebot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Twitterbot
+Disallow: /
+
+User-agent: rogerbot
+Disallow: /
+
+User-agent: linkedinbot
+Disallow: /
+
+User-agent: embedly
+Disallow: /
+
+User-agent: quora link preview
+Disallow: /
+
+User-agent: showyoubot
+Disallow: /
+
+User-agent: outbrain
+Disallow: /
+
+User-agent: pinterest/0.
+Disallow: /
+
+User-agent: developers.google.com/+/web/snippet
+Disallow: /
+
+User-agent: slackbot
+Disallow: /
+
+User-agent: vkShare
+Disallow: /
+
+User-agent: W3C_Validator
+Disallow: /
+
+User-agent: redditbot
+Disallow: /
+
+User-agent: Applebot
+Disallow: /
+
+User-agent: WhatsApp
+Disallow: /
+
+User-agent: flipboard
+Disallow: /
+
+User-agent: tumblr
+Disallow: /
+
+User-agent: bitlybot
+Disallow: /
+
+User-agent: SkypeUriPreview
+Disallow: /
+
+User-agent: nuzzel
+Disallow: /
+
+User-agent: Discordbot
+Disallow: /
+
+User-agent: Google Page Speed
+Disallow: /
+
+User-agent: Qwantify
+Disallow: /
+
+# AI Crawlers
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: magpie-crawler
+Disallow: /
+
+User-agent: Meltwater
+Disallow: /
+
+User-agent: NewsNow
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+# No sitemap provided
+Sitemap:
