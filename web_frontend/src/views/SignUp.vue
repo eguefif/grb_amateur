@@ -9,6 +9,7 @@ const email = ref('')
 const fullName = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const receiveNotification = ref(false)
 const errorMessage = ref('')
 const isLoading = ref(false)
 
@@ -37,6 +38,7 @@ const handleSubmit = async () => {
       email: email.value,
       full_name: fullName.value,
       email_confirmed: false,
+      receive_notification: receiveNotification.value,
       password: password.value,
       password_confirmation: confirmPassword.value
     }
@@ -115,6 +117,18 @@ const handleSubmit = async () => {
               required
               :disabled="isLoading"
             />
+          </div>
+
+          <div class="form-group-checkbox">
+            <label class="checkbox-label">
+              <input
+                id="receive-notification"
+                v-model="receiveNotification"
+                type="checkbox"
+                :disabled="isLoading"
+              />
+              <span>I want to receive email notifications for new GRB events</span>
+            </label>
           </div>
 
           <div v-if="errorMessage" class="error-message">
@@ -219,6 +233,40 @@ const handleSubmit = async () => {
 
 .form-group input::placeholder {
   color: rgba(255, 255, 255, 0.4);
+}
+
+.form-group-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.checkbox-label input[type='checkbox'] {
+  margin-top: 0.2rem;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #8a2be2;
+  flex-shrink: 0;
+}
+
+.checkbox-label input[type='checkbox']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkbox-label span {
+  flex: 1;
 }
 
 .error-message {

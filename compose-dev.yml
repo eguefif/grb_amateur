@@ -1,10 +1,13 @@
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: postgres
     env_file: ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     networks:
       - webnet
     healthcheck:
@@ -12,22 +15,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  alertsys:
-    build: ./alertsys
-    env_file: ./alertsys/.env.prod
-    depends_on: 
-      - backend
-    networks:
-      - webnet
-
-  backend:
-    build: ./web_backend
-    env_file: ./web_backend/.env.prod
-    depends_on: 
-      - postgres
-    networks:
-      - webnet
 
 volumes:
   postgres_data:
