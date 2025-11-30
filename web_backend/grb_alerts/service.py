@@ -88,7 +88,7 @@ async def verify_signature(
     trigger_num = event["trigger_num"]
     message = f"{x_timestamp}:{trigger_num}".encode()
     expected_signature = hmac.new(
-        os.getenv("SECRET_KEY").encode(), message, hashlib.sha256
+        os.getenv("SECRET_KEY_ALERT_SYS").encode(), message, hashlib.sha256
     ).hexdigest()
 
     if expected_signature != x_signature:
