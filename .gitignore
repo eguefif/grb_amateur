@@ -1,3 +1,5 @@
+web_frontend/certificates_grb/
+
 # Python-generated files
 __pycache__/
 *.py[oc]

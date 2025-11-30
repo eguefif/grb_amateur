@@ -1,11 +1,5 @@
 run-dev: 
-    docker compose -f compose-dev.yml up
-
-run-prod:
-    docker compose -f compose-core.yml -f compose-prod.yml up
-
-run-staging:
-    docker compose -f compose-core.yml -f compose-staging.yml up
+    docker compose up
 
 front:
     cd web_frontend && npm run dev
