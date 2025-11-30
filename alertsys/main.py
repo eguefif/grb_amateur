@@ -19,7 +19,8 @@ def get_message_client():
 
 
 def main():
-    load_dotenv()
+    if os.getenv("PROD") == "True":
+        load_dotenv("/run/secrets/alertsys-secret")
     message_client = get_message_client()
     print("Starting monitoring alert")
 
