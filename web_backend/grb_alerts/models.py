@@ -10,20 +10,20 @@ class GRBAlert(SQLModel, table=True):
     __tablename__ = "grb_alerts"
 
     id: int | None = Field(default=None, primary_key=True)
-    title: str
-    notice_date: str
-    notice_type: str
-    record_num: int
-    trigger_num: int
-    grb_date: str
-    grb_time: str
-    trigger_signif: str
-    trigger_dur: str
-    e_range: str
-    algorithm: str
-    detectors: str
-    lc_url: str
-    comments: str
+    title: str | None
+    notice_date: str | None
+    notice_type: str | None
+    record_num: int | None
+    trigger_num: int | None
+    grb_date: str | None
+    grb_time: str | None
+    trigger_signif: str | None
+    trigger_dur: str | None
+    e_range: str | None
+    algorithm: str | None
+    detectors: str | None
+    lc_url: str | None
+    comments: str | None
     observations: list["Observation"] = Relationship(back_populates="alert")
 
 

@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
@@ -7,7 +8,10 @@ import users.routes
 import grb_alerts.routes
 import observations.routes
 
-load_dotenv()
+if os.getenv("PROD") == "Ttrue":
+    load_dotenv("/run/secrets/backend-secrets")
+else:
+    load_dotenv() 
 
 app = FastAPI()
 
