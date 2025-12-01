@@ -1,0 +1,58 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-push-alertsys:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_LOGIN }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push AlertSys Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./alertsys
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ secrets.DOCKER_HUB_LOGIN }}/${{ secrets.DOCKER_HUB_REPO }}:alertsys-latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  build-and-push-web-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_LOGIN }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push Web Backend Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./web_backend
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ secrets.DOCKER_HUB_LOGIN }}/${{ secrets.DOCKER_HUB_REPO }}:backend-latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
