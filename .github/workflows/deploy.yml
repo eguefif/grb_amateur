@@ -1,0 +1,39 @@
+name: Deploy Services
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]
+    types:
+      - completed
+    branches: [ master ]
+
+jobs:
+  deploy-alertsys:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Trigger AlertSys Deployment
+      run: |
+        curl -f -X GET "http://www.grb-amateur.space/deploy/alertsys" \
+          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Trigger Backend Deployment
+      run: |
+        curl -f -X GET "http://www.grb-amateur.space/deploy/backend" \
+          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Trigger Frontend Deployment
+      run: |
+        curl -f -X GET "http://www.grb-amateur.space/deploy/frontend" \
+          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
