@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Trigger AlertSys Deployment
       run: |
-        curl -f -X GET "http://www.grb-amateur.space/deploy/alertsys" \
+        curl -f -X GET "https://www.grb-amateur.space/deploy/alertsys" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
 
   deploy-backend:
@@ -25,7 +25,7 @@ jobs:
     steps:
     - name: Trigger Backend Deployment
       run: |
-        curl -f -X GET "http://www.grb-amateur.space/deploy/backend" \
+        curl -f -X GET "https://www.grb-amateur.space/deploy/backend" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
 
   deploy-frontend:
@@ -35,5 +35,5 @@ jobs:
     steps:
     - name: Trigger Frontend Deployment
       run: |
-        curl -f -X GET "http://www.grb-amateur.space/deploy/frontend" \
+        curl -f -X GET "https://www.grb-amateur.space/deploy/frontend" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
