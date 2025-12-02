@@ -15,8 +15,19 @@ jobs:
     steps:
     - name: Trigger AlertSys Deployment
       run: |
-        curl -f -X GET "https://www.grb-amateur.space/deploy/alertsys" \
-          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
+        echo "Attempting deployment..."
+        response=$(curl -w "\n%{http_code}" -X GET "https://www.grb-amateur.space/deploy/alertsys" \
+          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}" \
+          -H "User-Agent: GitHub-Actions" \
+          -s)
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | head -n-1)
+        echo "HTTP Status: $http_code"
+        echo "Response: $body"
+        if [ "$http_code" != "200" ]; then
+          echo "Deployment failed with status $http_code"
+          exit 1
+        fi
 
   deploy-backend:
     runs-on: ubuntu-latest
@@ -25,8 +36,19 @@ jobs:
     steps:
     - name: Trigger Backend Deployment
       run: |
-        curl -f -X GET "https://www.grb-amateur.space/deploy/backend" \
-          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}"
+        echo "Attempting deployment..."
+        response=$(curl -w "\n%{http_code}" -X GET "https://www.grb-amateur.space/deploy/backend" \
+          -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}" \
+          -H "User-Agent: GitHub-Actions" \
+          -s)
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | head -n-1)
+        echo "HTTP Status: $http_code"
+        echo "Response: $body"
+        if [ "$http_code" != "200" ]; then
+          echo "Deployment failed with status $http_code"
+          exit 1
+        fi
 
   deploy-frontend:
     runs-on: ubuntu-latest
