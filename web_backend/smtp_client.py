@@ -14,7 +14,7 @@ Environment Variables Required:
 
 import os
 from email.utils import formataddr
-from smtplib import SMTP
+from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -34,13 +34,12 @@ class SMTPClient:
         Raises:
             ValueError: If SMTP_PORT cannot be converted to an integer.
         """
-        self.sender = os.getenv("SENDER")
+        self.sender = os.getenv("FASTMAIL_LOGIN").strip()
         self.sender_name = os.getenv("SENDER_NAME")
-        self.postmark_stream = os.getenv("POSTMARK_STREAM")
-        self.password = os.getenv("POSTMARK_PASS")
-        self.login = os.getenv("POSTMARK_LOGIN")
-        self.smtp_domain = os.getenv("SMTP_DOMAIN")
-        self.smtp_port = int(os.getenv("SMTP_PORT"))
+        self.password = os.getenv("FASTMAIL_PASSWORD")
+        self.login = os.getenv("FASTMAIL_LOGIN").strip()
+        self.smtp_domain = os.getenv("FASTMAIL").strip()
+        self.smtp_port = int(os.getenv("FASTMAIL_PORT"))
 
     def send_email(self, emails: list[str], subject, body):
         """
@@ -58,14 +57,13 @@ class SMTPClient:
             smtplib.SMTPException: If authentication or sending fails.
             OSError: If connection to SMTP server fails.
         """
-        with SMTP(self.smtp_domain, port=self.smtp_port) as smtp:
-            smtp.starttls()
+        with SMTP_SSL(self.smtp_domain, port=self.smtp_port) as smtp:
             smtp.login(self.login, self.password)
             for email in emails:
                 print(f"Sending email to : {email}")
                 message = self._get_message(email, subject, body)
                 print(message.as_string())
-                # smtp.sendmail(self.login, email, message.as_string())
+                smtp.sendmail(self.login, email, message.as_string())
 
     def _get_message(self, email, subject, body):
         """
@@ -80,11 +78,10 @@ class SMTPClient:
             MIMEMultipart: Formatted email message ready to send.
         """
         message = MIMEMultipart()
-        message["From"] = formataddr((self.sender_name, self.sender))
+        message["From"] = self.sender
         print(f"Sending email from : {message['From']}")
         message["To"] = email
         message["Subject"] = subject
-        message["X-PM-Message-Stream"] = "outbound"  # self.postmark_stream
         print("Sending message:\n", body)
         message.attach(MIMEText(body, "html"))
         return message
@@ -95,4 +92,4 @@ if __name__ == "__main__":
 
     load_dotenv()
     smtp = SMTPClient()
-    smtp.send_email(["test@grb-amateur.space"], "test", "test")
+    smtp.send_email(["eguefif@gmail.com"], "test", "test")
