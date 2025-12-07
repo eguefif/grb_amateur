@@ -11,7 +11,7 @@ import observations.routes
 if os.getenv("PROD") == "Ttrue":
     load_dotenv("/run/secrets/backend-secrets")
 else:
-    load_dotenv() 
+    load_dotenv()
 
 app = FastAPI()
 

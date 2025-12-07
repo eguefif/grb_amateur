@@ -14,7 +14,7 @@ import os
 if os.getenv("PROD") == "True":
     load_dotenv("/run/secrets/backend-secrets")
 else:
-    load_dotenv() 
+    load_dotenv()
 
 PG_USER = os.getenv("POSTGRES_USER")
 PG_PASSWORD = os.getenv("POSTGRES_PASSWORD")

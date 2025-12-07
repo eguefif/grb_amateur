@@ -13,7 +13,6 @@ Environment Variables Required:
 """
 
 import os
-from email.utils import formataddr
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -35,7 +34,6 @@ class SMTPClient:
             ValueError: If SMTP_PORT cannot be converted to an integer.
         """
         self.sender = os.getenv("FASTMAIL_LOGIN").strip()
-        self.sender_name = os.getenv("SENDER_NAME")
         self.password = os.getenv("FASTMAIL_PASSWORD")
         self.login = os.getenv("FASTMAIL_LOGIN").strip()
         self.smtp_domain = os.getenv("FASTMAIL").strip()
@@ -58,6 +56,7 @@ class SMTPClient:
             OSError: If connection to SMTP server fails.
         """
         with SMTP_SSL(self.smtp_domain, port=self.smtp_port) as smtp:
+            smtp.starttls()
             smtp.login(self.login, self.password)
             for email in emails:
                 print(f"Sending email to : {email}")

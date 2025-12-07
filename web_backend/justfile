@@ -1,13 +1,13 @@
 setup:
     uv sync
-    uvr db.py
-    uvr alembic upgrade head
+    uv run db.py
+    uv run alembic upgrade head
     mkdir static
     mkdir static/dev
 
 db-build:
     uv run db.py
-    uv run alembic upgrade head
+    uv run python3 -m alembic upgrade head
     uv run python -m seed.seed
 
 seed:

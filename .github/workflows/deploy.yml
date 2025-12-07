@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Trigger AlertSys Deployment
       run: |
-        curl -f -X POST "https://${{ secrets.IP_TARGET }}/deploy/alertsys" \
+        curl -f -X POST "https://www.grb-amateur.space/deploy/alertsys" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}" \
           -H "User-Agent: GitHub-Actions" \
           -H "Content-Type: application/json"
@@ -27,7 +27,7 @@ jobs:
     steps:
     - name: Trigger Backend Deployment
       run: |
-        curl -f -X POST "https://${{ secrets.IP_TARGET }}/deploy/backend" \
+        curl -f -X POST "https://www.grb-amateur.space/deploy/backend" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}" \
           -H "User-Agent: GitHub-Actions" \
           -H "Content-Type: application/json"
@@ -39,7 +39,7 @@ jobs:
     steps:
     - name: Trigger Frontend Deployment
       run: |
-        curl -f -X POST "https://${{ secrets.IP_TARGET }}/deploy/frontend" \
+        curl -f -X POST "https://www.grb-amateur.space/deploy/frontend" \
           -H "X-Signature: ${{ secrets.DEPLOY_SECRET }}" \
           -H "User-Agent: GitHub-Actions" \
           -H "Content-Type: application/json"
