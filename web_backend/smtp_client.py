@@ -56,7 +56,6 @@ class SMTPClient:
             OSError: If connection to SMTP server fails.
         """
         with SMTP_SSL(self.smtp_domain, port=self.smtp_port) as smtp:
-            smtp.starttls()
             smtp.login(self.login, self.password)
             for email in emails:
                 print(f"Sending email to : {email}")
