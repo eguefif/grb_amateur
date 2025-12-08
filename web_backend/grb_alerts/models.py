@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from datetime import datetime
 
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -25,6 +26,7 @@ class GRBAlert(SQLModel, table=True):
     lc_url: str | None
     comments: str | None
     observations: list["Observation"] = Relationship(back_populates="alert")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class GRBPosition(SQLModel, table=True):
