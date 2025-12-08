@@ -22,9 +22,7 @@ def send_confirmation_email(email: str):
     body = "<html><body>"
     body += "<h2>Hello</h2>"
     body += "<p>Please confirm your email address by going to the following addres</p>"
-    body += (
-        f'<p><a href="{backend_domain}/api/users/confirm/{email}">Confirmation link</a></p>'
-    )
+    body += f'<p><a href="{backend_domain}/api/users/confirm/{email}">Confirmation link</a></p>'
     body += "<p>Emmanuel</p>"
     body += "</body></html>"
     smtp_client.send_email([email], "Email Confirmation", body)

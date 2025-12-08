@@ -33,7 +33,14 @@ def read_events(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ) -> list[GRBAlert]:
-    alerts = session.exec(select(GRBAlert).offset(offset).limit(limit)).all()
+    query = (
+        select(GRBAlert)
+        .offset(offset)
+        .limit(limit)
+        .order_by(GRBAlert.created_at.desc())
+    )
+
+    alerts = session.exec(query).all()
     return alerts
 
 
